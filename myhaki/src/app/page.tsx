@@ -1,11 +1,10 @@
 import Image from "next/image";
-import SplashScreen from "./teaser-screens/splash-screen/page";
 
 
 export default function Home() {
   return (
     <div >
-      <SplashScreen />
+  <h1>Welcome to MyHaki</h1>
     </div>
   );
 }
