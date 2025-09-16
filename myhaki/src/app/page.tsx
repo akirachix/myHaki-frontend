@@ -1,10 +1,11 @@
 import Image from "next/image";
-import SidebarWithLogo from "./shared-components";
+import Sidebar from "./shared-components/SideBar";
+import Layout from "./shared-components/Layout";
 
 export default function Home() {
   return (
     <div >
-      <SidebarWithLogo />
+      <Sidebar />
       <h1>Welcome to MyHaki dashboard!</h1>
     </div>
   );

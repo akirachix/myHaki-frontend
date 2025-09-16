@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function SidebarWithLogo() {
+export default function Sidebar() {
     const pathname = usePathname();
 
     function isActive(path: string) {
@@ -15,14 +15,14 @@ export default function SidebarWithLogo() {
         <div className="flex flex-col w-70 min-h-screen ">
             <div className="mb-8">
                 <Image
-                    src="/images/logo-one.png"
+                    src="/images/logo-one.png"  
                     alt="MyHaki Logo"
                     width={500}
                     height={300}
                     style={{ transform: "translateY(78px)" }}
                 />
             </div>
-            <aside className="flex flex-col flex-1 p-4 text-white bg-[#7B1824]" style={{ marginTop: "-5rem" }}>
+            <aside className="flex flex-col flex-1 p-4 text-white bg-[#621616]" style={{ marginTop: "-5rem" }}>
                 <nav className="flex flex-col gap-8 mt-50 text-xl ml-8">
                     <Link
                         href="/Dashboard"
