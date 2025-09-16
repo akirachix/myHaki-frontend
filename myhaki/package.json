@@ -7,9 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:watch": "vitest watch"
+    "test": "jest" 
   },
   "dependencies": {
     "next": "15.5.3",
@@ -25,6 +23,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+<<<<<<< HEAD
     "@vitejs/plugin-react": "^5.0.2",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
@@ -36,5 +35,13 @@
     "ts-jest": "^29.4.2",
     "typescript": "^5",
     "vitest": "^3.2.4"
+=======
+    "eslint": "^9",
+    "eslint-config-next": "15.5.3",
+    "jest": "^30.1.3",
+    "jest-environment-jsdom": "^30.1.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+>>>>>>> 353ea868bea4c20a205748ced085cd51190ef636
   }
 }
