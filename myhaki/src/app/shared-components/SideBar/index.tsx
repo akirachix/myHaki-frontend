@@ -78,7 +78,7 @@ export default function Sidebar() {
                     <div className="flex-grow" />
 
                     <Link
-                        href="/profile"
+                        href="/profile/[userId]"
                         className={`flex items-center gap-4 ml-2 mt-25 ${isActive("/profile") ? "underline" : "hover:underline"}`}
                     >
                 

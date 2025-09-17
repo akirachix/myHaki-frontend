@@ -36,7 +36,7 @@ export default function WelcomePageThird() {
             </div>
 
             <div className="w-3/5 flex flex-col justify-center items-center p-12 bg-white">
-                   <p className="text-center mb-10 max-w-120 mt-10 text-3xl">
+                <p className="text-center mb-10 max-w-120 mt-10 text-3xl">
                     Log in to begin managing justice with confidence and generate reports efficiently.
                 </p>
 
@@ -58,7 +58,7 @@ export default function WelcomePageThird() {
 
 
                 <button
-                    onClick={() => router.push('signup')}
+                    onClick={() => router.push('/authentication/sign-in')}
                     className="bg-[#7B1824] text-white py-2 px-6 rounded font-semibold text-xl hover:bg-red-900 transition cursor-pointer w-80 h-15"
                 >
                     Get started
