@@ -97,9 +97,9 @@ describe('LawyersPage', () => {
     render(<LawyersPage />)
 
     await waitFor(() => {
-      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
-      expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
-      expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
+      expect(screen.getByText(/John Kamau/i)).toBeInTheDocument()
+      expect(screen.getByText(/Marion Smith/i)).toBeInTheDocument()
+      expect(screen.getByText(/Alberto Bruce/i)).toBeInTheDocument()
     })
 
     expect(screen.getByText(/10 pts/i)).toBeInTheDocument()
@@ -117,9 +117,9 @@ describe('LawyersPage', () => {
     fireEvent.change(searchInput, { target: { value: 'John' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
-      expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument()
-      expect(screen.queryByText(/Albert Bruce/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/John Kamau/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Marion Smith/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Alberto Bruce/i)).not.toBeInTheDocument()
     })
   })
 
@@ -133,17 +133,17 @@ describe('LawyersPage', () => {
     fireEvent.change(filterSelect, { target: { value: 'true' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
-      expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
-      expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/John Kamau/i)).toBeInTheDocument()
+      expect(screen.getByText(/Alberto Bruce/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Marion Smith/i)).not.toBeInTheDocument()
     })
 
     fireEvent.change(filterSelect, { target: { value: 'false' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
-      expect(screen.queryByText(/John Doe/i)).not.toBeInTheDocument()
-      expect(screen.queryByText(/Albert Bruce/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/Marion Smith/i)).toBeInTheDocument()
+      expect(screen.queryByText(/John Kamau/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Alberto Bruce/i)).not.toBeInTheDocument()
     })
   })
 
