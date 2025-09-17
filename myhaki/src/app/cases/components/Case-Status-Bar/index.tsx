@@ -10,11 +10,7 @@ export default function CaseStatusBar() {
   const totalCases = cases.length;
 
   return (
-    <div className="min-h-screen bg-white lg:flex relative">
-      <div className="absolute top-4 right-4 z-10">
-        <Image src="/images/notification-icon.png" alt="Notifications" width={24} height={24} />
-      </div>
-      
+    <div className="min-h-screen bg-white lg:flex relative">      
       <main className="flex-1 px-4 md:px-8 py-8 ">
         <h1 className="text-3xl text-red-900 font-bold mb-6">Case overview</h1>
         <Image src="/images/case-overview.png" alt="Case Overview Banner" width={1200} height={200} className=" h-[23%] mb-6 rounded-lg shadow-md [@media(width:1024px)]:ml-[-5%] [@media(width:2560px)]:w-400" />
