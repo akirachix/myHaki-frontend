@@ -10,7 +10,7 @@ export default function InitAuthToken() {
     const existingToken = document.cookie.includes('auth_token');
     if (!existingToken) {
       setAuthToken(FIXED_TOKEN);
-      console.log('✅ Auth token set in cookies');
+      console.log('Auth token set in cookies');
     }
   }, []);
 
