@@ -2,12 +2,10 @@
 import { NextResponse } from "next/server";
 
 const BASE_URL = process.env.BASE_URL;
-const AUTH_TOKEN = process.env.AUTH_TOKEN;
-
 
 export async function GET() {
   console.log("[START] Fetching lawyers from:", `${BASE_URL}/users/?role=lawyer`);
-  console.log("Token present:", !!AUTH_TOKEN);
+  console.log("Token present");
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
@@ -20,7 +18,7 @@ export async function GET() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Token ${AUTH_TOKEN}`,
+        Authorization: `Token ${"AUTH_TOKEN"}`,
       },
       cache: "no-store",
       signal: controller.signal,

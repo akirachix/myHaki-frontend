@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import CaseTable from './components/Cases-Table';
 import CaseStatusBar from "./components/Case-Status-Bar";
 import Sidebar from '../shared-components/SideBar';
 import Image from 'next/image';
