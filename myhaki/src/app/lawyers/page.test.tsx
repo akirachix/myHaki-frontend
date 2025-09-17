@@ -1,223 +1,226 @@
-// // src/app/lawyers/page.test.tsx
 
-// import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-// import { describe, it, expect, vi, beforeEach } from 'vitest'
-// import LawyersPage from './page'
-// import { useFetchLawyers } from '@/app/hooks/useFetchLawyers'
+import React from 'react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import LawyersPage from './page'
 
-// // Mock the hook
-// vi.mock('@/app/hooks/useFetchLawyers', () => ({
-//   useFetchLawyers: vi.fn(),
-// }))
+jest.mock('@/app/hooks/useFetchLawyers', () => ({
+  useFetchLawyers: jest.fn(),
+}))
 
-// // Mock Sidebar (if it's simple)
-// vi.mock('@/app/shared-components/page', () => ({
-//   default: () => <div data-testid="sidebar">Sidebar</div>,
-// }))
+jest.mock('@/app/shared-components/page', () => ({
+  __esModule: true,
+  default: () => <div data-testid="sidebar">Sidebar</div>,
+}))
 
-// // Mock sample lawyers
-// const mockLawyers = [
-//   {
-//     id: 1,
-//     first_name: "John",
-//     last_name: "Doe",
-//     verified: true,
-//     work_place: "Doe & Co.",
-//     cpd_points_2025: 10,
-//     criminal_law: true,
-//     corporate_law: false,
-//     family_law: true,
-//     pro_bono_legal_services: false,
-//     alternative_dispute_resolution: true,
-//     regional_and_international_law: false,
-//     mining_law: false,
-//   },
-//   {
-//     id: 2,
-//     first_name: "Jane",
-//     last_name: "Smith",
-//     verified: false,
-//     work_place: "Smith Law",
-//     cpd_points_2025: 5,
-//     criminal_law: false,
-//     corporate_law: true,
-//     family_law: false,
-//     pro_bono_legal_services: true,
-//     alternative_dispute_resolution: false,
-//     regional_and_international_law: true,
-//     mining_law: false,
-//   },
-//   {
-//     id: 3,
-//     first_name: "Albert",
-//     last_name: "Bruce",
-//     verified: true,
-//     work_place: "Consolidated Bank",
-//     cpd_points_2025: 6,
-//     criminal_law: false,
-//     corporate_law: true,
-//     family_law: false,
-//     pro_bono_legal_services: false,
-//     alternative_dispute_resolution: false,
-//     regional_and_international_law: false,
-//     mining_law: false,
-//   },
-// ]
+import { useFetchLawyers } from '@/app/hooks/useFetchLawyers'
 
-// describe('LawyersPage', () => {
-//   beforeEach(() => {
-//     vi.clearAllMocks()
-//   })
+type Lawyer = {
+  id: number,
+  first_name: string,
+  last_name: string,
+  verified: boolean,
+  work_place: string,
+  cpd_points_2025: number,
+  criminal_law: boolean,
+  corporate_law: boolean,
+  family_law: boolean,
+  pro_bono_legal_services: boolean,
+  alternative_dispute_resolution: boolean,
+  regional_and_international_law: boolean,
+  mining_law: boolean,
+}
 
-//   it('shows loading state initially', () => {
-//     ;(useFetchLawyers as any).mockReturnValue({ lawyers: [], loading: true })
+const mockLawyers: Lawyer[] = [
+  {
+    id: 1,
+    first_name: "John",
+    last_name: "Doe",
+    verified: true,
+    work_place: "Doe & Co.",
+    cpd_points_2025: 10,
+    criminal_law: true,
+    corporate_law: false,
+    family_law: true,
+    pro_bono_legal_services: false,
+    alternative_dispute_resolution: true,
+    regional_and_international_law: false,
+    mining_law: false,
+  },
+  {
+    id: 2,
+    first_name: "Jane",
+    last_name: "Smith",
+    verified: false,
+    work_place: "Smith Law",
+    cpd_points_2025: 5,
+    criminal_law: false,
+    corporate_law: true,
+    family_law: false,
+    pro_bono_legal_services: true,
+    alternative_dispute_resolution: false,
+    regional_and_international_law: true,
+    mining_law: false,
+  },
+  {
+    id: 3,
+    first_name: "Albert",
+    last_name: "Bruce",
+    verified: true,
+    work_place: "Consolidated Bank",
+    cpd_points_2025: 6,
+    criminal_law: false,
+    corporate_law: true,
+    family_law: false,
+    pro_bono_legal_services: false,
+    alternative_dispute_resolution: false,
+    regional_and_international_law: false,
+    mining_law: false,
+  },
+]
 
-//     render(<LawyersPage />)
+describe('LawyersPage', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
 
-//     expect(screen.getByText(/Loading lawyers.../i)).toBeInTheDocument()
-//   })
+  it('shows loading state initially', () => {
+    (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: [], loading: true })
 
-//   it('renders lawyers table when data loads', async () => {
-//     ;(useFetchLawyers as any).mockReturnValue({ lawyers: mockLawyers, loading: false })
+    render(<LawyersPage />)
 
-//     render(<LawyersPage />)
+    expect(screen.getByText(/Loading lawyers.../i)).toBeInTheDocument()
+  })
 
-//     await waitFor(() => {
-//       expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
-//       expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
-//       expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
-//     })
+  it('renders lawyers table when data loads', async () => {
+    (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: mockLawyers, loading: false })
 
-//     expect(screen.getByText(/10 pts/i)).toBeInTheDocument()
-//     expect(screen.getByText(/5 pts/i)).toBeInTheDocument()
-//     expect(screen.getByText(/Corporate law, Pro bono services, Regional & International law/i)).toBeInTheDocument()
-//   })
+    render(<LawyersPage />)
 
-//   it('filters lawyers by search query', async () => {
-//     ;(useFetchLawyers as any).mockReturnValue({ lawyers: mockLawyers, loading: false })
+    await waitFor(() => {
+      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
+      expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
+      expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
+    })
 
-//     render(<LawyersPage />)
+    expect(screen.getByText(/10 pts/i)).toBeInTheDocument()
+    expect(screen.getByText(/5 pts/i)).toBeInTheDocument()
+    expect(screen.getByText(/Corporate law, Pro bono services, Regional & International law/i)).toBeInTheDocument()
+  })
 
-//     const searchInput = screen.getByPlaceholderText(/Search by name.../i)
+  it('filters lawyers by search query', async () => {
+    (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: mockLawyers, loading: false })
 
-//     fireEvent.change(searchInput, { target: { value: 'John' } })
+    render(<LawyersPage />)
 
-//     await waitFor(() => {
-//       expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
-//       expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument()
-//       expect(screen.queryByText(/Albert Bruce/i)).not.toBeInTheDocument()
-//     })
-//   })
+    const searchInput = screen.getByPlaceholderText(/Search by name.../i)
 
-//   it('filters by verified status', async () => {
-//     ;(useFetchLawyers as any).mockReturnValue({ lawyers: mockLawyers, loading: false })
+    fireEvent.change(searchInput, { target: { value: 'John' } })
 
-//     render(<LawyersPage />)
+    await waitFor(() => {
+      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Albert Bruce/i)).not.toBeInTheDocument()
+    })
+  })
 
-//     const filterSelect = screen.getByRole('combobox')
+  it('filters by verified status', async () => {
+    (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: mockLawyers, loading: false })
 
-//     // Filter: Verified
-//     fireEvent.change(filterSelect, { target: { value: 'true' } })
+    render(<LawyersPage />)
 
-//     await waitFor(() => {
-//       expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
-//       expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
-//       expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument()
-//     })
+    const filterSelect = screen.getByRole('combobox')
 
-//     // Filter: Unverified
-//     fireEvent.change(filterSelect, { target: { value: 'false' } })
+    fireEvent.change(filterSelect, { target: { value: 'true' } })
 
-//     await waitFor(() => {
-//       expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
-//       expect(screen.queryByText(/John Doe/i)).not.toBeInTheDocument()
-//       expect(screen.queryByText(/Albert Bruce/i)).not.toBeInTheDocument()
-//     })
-//   })
+    await waitFor(() => {
+      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
+      expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument()
+    })
 
-//   it('pagination works correctly', async () => {
-//     // Create 10 lawyers to force pagination (7 per page)
-//     const manyLawyers = Array.from({ length: 10 }, (_, i) => ({
-//       id: i + 1,
-//       first_name: `Lawyer${i + 1}`,
-//       last_name: "Test",
-//       verified: true,
-//       work_place: "Test Firm",
-//       cpd_points_2025: 0,
-//       criminal_law: false,
-//       corporate_law: false,
-//       family_law: false,
-//       pro_bono_legal_services: false,
-//       alternative_dispute_resolution: false,
-//       regional_and_international_law: false,
-//       mining_law: false,
-//     }))
+    fireEvent.change(filterSelect, { target: { value: 'false' } })
 
-//     ;(useFetchLawyers as any).mockReturnValue({ lawyers: manyLawyers, loading: false })
+    await waitFor(() => {
+      expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
+      expect(screen.queryByText(/John Doe/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Albert Bruce/i)).not.toBeInTheDocument()
+    })
+  })
 
-//     render(<LawyersPage />)
+  const manyLawyers: Lawyer[] = Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    first_name: `Lawyer${i + 1}`,
+    last_name: "Test",
+    verified: true,
+    work_place: "Test Firm",
+    cpd_points_2025: 0,
+    criminal_law: false,
+    corporate_law: false,
+    family_law: false,
+    pro_bono_legal_services: false,
+    alternative_dispute_resolution: false,
+    regional_and_international_law: false,
+    mining_law: false,
+  }))
 
-//     // Page 1 should show Lawyer1 to Lawyer7
-//     await waitFor(() => {
-//       expect(screen.getByText(/Lawyer1 Test/i)).toBeInTheDocument()
-//       expect(screen.getByText(/Lawyer7 Test/i)).toBeInTheDocument()
-//       expect(screen.queryByText(/Lawyer8 Test/i)).not.toBeInTheDocument()
-//     })
+  it('paginates lawyers list', async () => {
+    (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: manyLawyers, loading: false })
 
-//     const nextPageButton = screen.getByText(/Next →/i)
-//     fireEvent.click(nextPageButton)
+    render(<LawyersPage />)
 
-//     // Page 2 should show Lawyer8 to Lawyer10
-//     await waitFor(() => {
-//       expect(screen.getByText(/Lawyer8 Test/i)).toBeInTheDocument()
-//       expect(screen.getByText(/Lawyer10 Test/i)).toBeInTheDocument()
-//       expect(screen.queryByText(/Lawyer1 Test/i)).not.toBeInTheDocument()
-//     })
+    await waitFor(() => {
+      expect(screen.getByText(/Lawyer1 Test/i)).toBeInTheDocument()
+      expect(screen.getByText(/Lawyer7 Test/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Lawyer8 Test/i)).not.toBeInTheDocument()
+    })
 
-//     const prevPageButton = screen.getByText(/← Previous/i)
-//     fireEvent.click(prevPageButton)
+    const nextPageButton = screen.getByText(/Next →/i)
+    fireEvent.click(nextPageButton)
 
-//     await waitFor(() => {
-//       expect(screen.getByText(/Lawyer1 Test/i)).toBeInTheDocument()
-//       expect(screen.queryByText(/Lawyer8 Test/i)).not.toBeInTheDocument()
-//     })
-//   })
+    await waitFor(() => {
+      expect(screen.getByText(/Lawyer8 Test/i)).toBeInTheDocument()
+      expect(screen.getByText(/Lawyer10 Test/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Lawyer1 Test/i)).not.toBeInTheDocument()
+    })
 
-//   it('disables pagination buttons on first/last page', async () => {
-//     const manyLawyers = Array.from({ length: 10 }, (_, i) => ({
-//       ...mockLawyers[0],
-//       id: i + 1,
-//       first_name: `Lawyer${i + 1}`,
-//     }))
+    const prevPageButton = screen.getByText(/← Previous/i)
+    fireEvent.click(prevPageButton)
 
-//     ;(useFetchLawyers as any).mockReturnValue({ lawyers: manyLawyers, loading: false })
+    await waitFor(() => {
+      expect(screen.getByText(/Lawyer1 Test/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Lawyer8 Test/i)).not.toBeInTheDocument()
+    })
+  })
 
-//     render(<LawyersPage />)
+  it('disables pagination buttons on first/last page', async () => {
+    (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: manyLawyers, loading: false })
 
-//     await waitFor(() => {
-//       const prevButton = screen.getByText(/← Previous/i)
-//       const nextButton = screen.getByText(/Next →/i)
+    render(<LawyersPage />)
 
-//       expect(prevButton).toBeDisabled() // Page 1 → Prev disabled
-//       expect(nextButton).not.toBeDisabled()
+    await waitFor(() => {
+      const prevButton = screen.getByText(/← Previous/i)
+      const nextButton = screen.getByText(/Next →/i)
 
-//       fireEvent.click(nextButton)
-//     })
+      expect(prevButton).toBeDisabled()
+      expect(nextButton).not.toBeDisabled()
 
-//     await waitFor(() => {
-//       const prevButton = screen.getByText(/← Previous/i)
-//       const nextButton = screen.getByText(/Next →/i)
+      fireEvent.click(nextButton)
+    })
 
-//       expect(prevButton).not.toBeDisabled()
-//       expect(nextButton).toBeDisabled() // Last page → Next disabled
-//     })
-//   })
+    await waitFor(() => {
+      const prevButton = screen.getByText(/← Previous/i)
+      const nextButton = screen.getByText(/Next →/i)
 
-//   it('renders sidebar', () => {
-//     ;(useFetchLawyers as any).mockReturnValue({ lawyers: [], loading: false })
+      expect(prevButton).not.toBeDisabled()
+      expect(nextButton).toBeDisabled()
+    })
+  })
 
-//     render(<LawyersPage />)
+  it('renders sidebar', () => {
+    (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: [], loading: false })
 
-//     expect(screen.getByTestId('sidebar')).toBeInTheDocument()
-//   })
-// })
+    render(<LawyersPage />)
+
+    expect(screen.getByTestId('sidebar')).toBeInTheDocument()
+  })
+})

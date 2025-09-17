@@ -1,31 +1,88 @@
+'use client';
 
-'use client'
-import { useState } from "react";
-import useFetchCases from "@/app/hooks/useFetchCases";
+import { useState, useEffect } from "react";
+import useFetchCases, { CaseItem } from "@/app/hooks/useFetchCases";
+import { useFetchLawyers } from "@/app/hooks/useFetchLawyers"; 
 import CaseDetailModal from "../Case-Detail-Modal";
+
+function normalizeStatus(status: string): string {
+  return status.toLowerCase().replace(/[\s-]+/g, '');
+}
+
+function getStatusClasses(status: string): string {
+  const coloredStatus = normalizeStatus(status || '');
+  switch (coloredStatus) {
+    case 'pending':
+      return 'bg-red-800 text-red-100';
+    case 'accepted':
+      return 'bg-[#f1c08b] text-gray-600';
+    case 'completed':
+      return 'bg-green-700 text-green-100';
+    case 'inprogress':
+      return 'bg-blue-100 text-blue-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+}
 
 export default function CaseTable() {
   const { cases, loading, error } = useFetchCases();
-  const [selectedCase, setSelectedCase] = useState(null);
+  const { lawyers, loading: lawyersLoading } = useFetchLawyers(); 
+
+  const [selectedCase, setSelectedCase] = useState<CaseItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 5;
 
-  if (loading) return <div className="flex justify-center py-12 text-gray-600">Loading cases...</div>;
-  if (error) return <div className="text-red-500 text-center py-12">Error: {error}</div>;
+  if (loading || lawyersLoading) return <div className="flex justify-center py-12 text-gray-600">Loading cases...</div>;
+  if (error) return <div className="text-[#b8906e] text-center py-12">Error: {error}</div>;
 
   const sortedCases = [...cases].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  const filteredCases = searchTerm.trim()
+    ? sortedCases.filter((caseItem) =>
+        (caseItem.predicted_case_type ?? '')
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
+    : sortedCases;
 
-  const totalPages = Math.ceil(sortedCases.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredCases.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentCases = sortedCases.slice(startIndex, startIndex + itemsPerPage);
+  const currentCases = filteredCases.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePrev = () => setCurrentPage(prev => Math.max(prev - 1, 1));
   const handleNext = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  const handleClear = () => {
+    setSearchTerm('');
+    setCurrentPage(1);
+  };
+
+  const getLawyerName = (lawyerId: number | null | undefined): string => {
+    if (!lawyerId) return 'Unassigned';
+    const lawyer = lawyers.find(l => l.id === lawyerId);
+    return lawyer ? lawyer.first_name : 'Unassigned';
+  };
 
   return (
     <div className="bg-white rounded-2xl [@media(width:1024px)]:ml-[-10%] shadow-xl p-6 overflow-hidden">
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-red-900">Case Management</h2>
+      <div className="mb-1">
+        <div className="mt-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+          <input
+            type="text"
+            placeholder="Search by case type..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-4 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b8906e] w-full sm:w-84"
+          />
+          {searchTerm && (
+            <button
+              onClick={handleClear}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
@@ -48,30 +105,24 @@ export default function CaseTable() {
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
             {currentCases.length > 0 ? (
-              currentCases.map((caseItem: any) => (
+              currentCases.map((caseItem: CaseItem) => (
                 <tr
                   key={caseItem.case_id}
                   className="group hover:bg-gradient-to-r from-gray-50 to-gray-25 transition-all duration-200 cursor-pointer border-b border-transparent hover:border-b border-gray-200"
                   onClick={() => setSelectedCase(caseItem)}
                 >
                   <td className="px-6 py-5 whitespace-nowrap text-sm font-medium text-gray-800">
-                    {caseItem.lawyer_first_name || 'Unassigned'}
+                    {getLawyerName(caseItem.lawyer_id)} 
                   </td>
                   <td className="px-6 py-5 whitespace-nowrap text-sm text-gray-700">
                     {caseItem.detainee_details?.first_name || 'Unknown'} {caseItem.detainee_details?.last_name || ''}
                   </td>
                   <td className="px-6 py-5 whitespace-nowrap text-sm text-gray-700">
-                    {caseItem.predicted_case_type || caseItem.case_type || 'Unfiltered'}
+                    {caseItem.case_type || caseItem.predicted_case_type || 'Unfiltered'}
                   </td>
                   <td className="px-6 py-5 whitespace-nowrap">
-                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full capitalize ${
-                      caseItem.status === 'Accepted' 
-                        ? 'bg-green-100 text-green-800' 
-                        : caseItem.status === 'Pending' 
-                          ? 'bg-yellow-100 text-yellow-800' 
-                          : 'bg-red-100 text-red-800'
-                    }`}>
-                      {caseItem.status}
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full capitalize ${getStatusClasses(caseItem.status)}`}>
+                      {caseItem.status || 'Unknown'}
                     </span>
                   </td>
                 </tr>
@@ -119,7 +170,6 @@ export default function CaseTable() {
         </div>
       )}
 
-      {/* Modal */}
       {selectedCase && (
         <CaseDetailModal
           caseItem={selectedCase}

@@ -5,7 +5,9 @@
      "types": [
       "@testing-library/jest-dom",
       "jest",
-      "node"
+      "node",
+      "vitest/globals",
+      
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -18,6 +20,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+
     "plugins": [
       {
         "name": "next"
@@ -26,12 +29,9 @@
     "paths": {
       "@/*": ["./src/*"]
     }
+    
   },
-<<<<<<< HEAD
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-=======
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src",
     "tests"],
->>>>>>> 353ea868bea4c20a205748ced085cd51190ef636
   "exclude": ["node_modules"]
 }

@@ -7,7 +7,7 @@ jest.mock("next/navigation", () => ({
   usePathname: jest.fn(),
 }));
 
-describe("SidebarWithLogo", () => {
+describe("Sidebar", () => {
   it("highlights the dashboard link when pathname is /dashboard", () => {
     (nextNavigation.usePathname as jest.Mock).mockReturnValue("/dashboard");
 
@@ -15,7 +15,7 @@ describe("SidebarWithLogo", () => {
     
     const dashboardLink = screen.getByText("Dashboard").closest("a");
 
-    expect(dashboardLink).toHaveClass("bg-[#AA8735]");
+    expect(dashboardLink).toHaveClass('bg-[#A87352]');
   });
 
   it("underlines the cases link when pathname is /cases", () => {

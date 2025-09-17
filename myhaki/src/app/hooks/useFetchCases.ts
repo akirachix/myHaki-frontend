@@ -5,6 +5,8 @@ import { fetchCases } from '../utils/fetchCases';
 export interface CaseItem {
   case_id: number;
   detainee: number;
+  lawyer_id: number | null; 
+  case_type: string | null; 
   detainee_details: {
     detainee_id: number;
     first_name: string;
