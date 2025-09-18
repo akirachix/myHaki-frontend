@@ -1,36 +1,23 @@
-import { NextResponse } from "next/server";
-import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+const baseUrl = process.env.BASE_URL;
+
+export async function GET(request: NextRequest) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
+    const token = request.headers.get("authorization")?.split(" ")[1];
 
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized, token missing' }, { status: 401 });
-    }
-
-    const response = await fetch(`${process.env.BASE_URL}/users/?role=lawyer`, {
+    const response = await fetch(`${baseUrl}/users/?role=lawyer`, {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
+        ...(token ? { Authorization: `Token ${token}` } : {}),
       },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      return NextResponse.json(
-        { error: errorData.error || 'Failed to fetch lawyers' },
-        { status: response.status }
-      );
-    }
+    const result = await response.json();
 
-    const data = await response.json();
-    return NextResponse.json(data);
-
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { throwError: (error as Error).message },
+      { error: (error as Error).message },
 
     );
   }
