@@ -1,33 +1,64 @@
-// const AUTH_TOKEN = process.env.NEXT_PUBLIC_AUTH_TOKEN || "";
+import { NextRequest, NextResponse } from "next/server";
 
-// export async function fetchProfile(userId: string) {
-//   const res = await fetch(`/api/users/${userId}/`, {
-//     method: "GET",
-//     headers: {
-//       Authorization: AUTH_TOKEN ? `Token ${AUTH_TOKEN}` : "",
-//       "Content-Type": "application/json",
-//     },
-//   });
+const baseUrl = process.env.BASE_URL;
+const authToken = process.env.AUTH_TOKEN;
 
-//   if (!res.ok) {
-//     const errorText = await res.text();
-//     throw new Error(errorText || "Failed to fetch profile");
-//   }
-//   return res.json();
-// }
+export async function GET(request: NextRequest) {
+  try {
+    if (!baseUrl) return NextResponse.json({ detail: "BASE_URL not set" }, { status: 500 });
 
-// export async function updateProfile(userId: string, formData: FormData) {
-//   const res = await fetch(`/api/users/${userId}/`, {
-//     method: "PUT",
-//     headers: {
-//       Authorization: AUTH_TOKEN ? `Token ${AUTH_TOKEN}` : "",
-//     },
-//     body: formData,
-//   });
+    const { pathname } = request.nextUrl;
+    const pathSegments = pathname.split("/");
+    const userId = pathSegments[pathSegments.length - 1];
+    if (!userId) return NextResponse.json({ detail: "User ID not provided" }, { status: 400 });
 
-//   if (!res.ok) {
-//     const errorText = await res.text();
-//     throw new Error(errorText || "Failed to update profile");
-//   }
-//   return res.json();
-// }
+    const token = request.headers.get("authorization") || `Token ${authToken || ""}`;
+    const url = `${baseUrl}/api/users/${userId}/`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json", ...(token ? { Authorization: token } : {}) },
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      return NextResponse.json({ detail: errText || "Error fetching user" }, { status: response.status });
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ detail: (error as Error).message || "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    if (!baseUrl) return NextResponse.json({ detail: "BASE_URL not set" }, { status: 500 });
+
+    const { pathname } = request.nextUrl;
+    const pathSegments = pathname.split("/");
+    const userId = pathSegments[pathSegments.length - 1];
+    if (!userId) return NextResponse.json({ detail: "User ID not provided" }, { status: 400 });
+
+    const token = request.headers.get("authorization") || `Token ${authToken || ""}`;
+    const url = `${baseUrl}/api/users/${userId}/`;
+
+    const formData = await request.formData();
+
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: { ...(token ? { Authorization: token } : {}) },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      return NextResponse.json({ detail: errText || "Failed to update profile" }, { status: response.status });
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ detail: (error as Error).message || "Internal Server Error" }, { status: 500 });
+  }
+}
