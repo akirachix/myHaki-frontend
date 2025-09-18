@@ -1,6 +1,6 @@
-const baseUrl = '/api/lawyers'; 
+const baseUrl = '/api/lsk-admin'; 
 
-export async function fetchLawyers() {
+export async function fetchLSKAdmin() {
   try {
     const response = await fetch(baseUrl);
     if (!response.ok) {

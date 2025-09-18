@@ -2,7 +2,7 @@ export async function GET() {
     const baseUrl = process.env.BASE_URL;
     const token = process.env.AUTH_TOKEN; 
   
-    const url = `${baseUrl}/users/?role=lawyer`;
+    const url = `${baseUrl}/users/?role=lsk_admin`;
   
     try {
       const response = await fetch(url, {
