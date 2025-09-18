@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Layout from '../shared-components/Layout';
 
 
-export default function CasesPage() {
+export default function Cases() {
   return (
     
     <div>

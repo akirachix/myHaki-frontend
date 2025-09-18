@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Poppins } from "next/font/google";
-import InitAuthToken from "./components/InitAuthToken";
 
 
 const poppins = Poppins({
@@ -26,7 +25,6 @@ export default function RootLayout({
         className={`${poppins.variable} antialiased`}
         
       >
-        <InitAuthToken />
         {children}
       </body>
     </html>

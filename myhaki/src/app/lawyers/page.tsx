@@ -1,7 +1,7 @@
 'use client';
 import { useState, useMemo } from 'react';
 import Select from 'react-select';
-import { useFetchLawyers } from "../hooks/useFetchLawyers";
+import useFetchLawyers from "../hooks/useFetchLawyers";
 import Sidebar from '../shared-components/SideBar';
 import { FaCheckCircle } from 'react-icons/fa';
 

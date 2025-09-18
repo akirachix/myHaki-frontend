@@ -3,6 +3,8 @@ import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import LawyersPage from './page'
 
+import useFetchLawyers from '@/app/hooks/useFetchLawyers'
+
 jest.mock('@/app/hooks/useFetchLawyers', () => ({
   useFetchLawyers: jest.fn(),
 }))
@@ -12,7 +14,6 @@ jest.mock('@/app/shared-components/page', () => ({
   default: () => <div data-testid="sidebar">Sidebar</div>,
 }))
 
-import { useFetchLawyers } from '@/app/hooks/useFetchLawyers'
 
 type Lawyer = {
   id: number,

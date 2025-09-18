@@ -9,6 +9,7 @@ export async function fetchDetainees() {
     const result = await response.json();
     return result;
   } catch (error) {
-    throw new Error('Failed to fetch cases: ' + (error as Error).message);
+    console.error('fetchDetainees error:', error);
+    return [];
   }
 }
