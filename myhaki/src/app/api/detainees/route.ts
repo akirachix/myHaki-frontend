@@ -4,14 +4,10 @@ const baseUrl = process.env.BASE_URL;
 
 export async function GET(request: NextRequest) {
   try {
-    const response = await fetch(`${baseUrl}/cases/`);
+    const response = await fetch(`${baseUrl}/detainees/`);
     const result = await response.json();
 
-    const sortedResult = result.sort((a: any, b: any) => 
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    );
-
-    return NextResponse.json(sortedResult, {
+    return NextResponse.json(result, {
       status: 200,
     });
   } catch (error) {

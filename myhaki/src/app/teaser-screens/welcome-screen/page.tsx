@@ -20,9 +20,7 @@ export default function WelcomePageThird() {
     const routes = ['/teaser-screens/teaser-screen', '/teaser-screens/teaser-SecondScreen', '/teaser-screens/welcome-screen'];
 
     return (
-        <div className="flex min-h-screen" style={{
-            fontFamily: nunito.style.fontFamily
-        }}>
+        <div className="flex min-h-screen" >
             <div className="w-200 relative">
                 <div className="absolute inset-0 overflow-hidden">
                     <Image

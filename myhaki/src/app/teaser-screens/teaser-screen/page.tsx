@@ -3,13 +3,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Nunito } from 'next/font/google';
-
-const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-nunito',
-});
 
 export default function WelcomePageFirst() {
   const [step, setStep] = useState(0);
@@ -33,10 +26,8 @@ export default function WelcomePageFirst() {
         </div>
       </div>
 
-      <div className="w-3/5 flex flex-col justify-center items-center p-12 bg-white " style={{
-        fontFamily: nunito.style.fontFamily
-      }}>
-        <h1 className="text-5xl font-semi-bold mb-4">Welcome!</h1>
+      <div className="w-3/5 flex flex-col justify-center items-center p-12 bg-white ">
+        <h1 className="text-6xl font-semi-bold mb-4">Welcome!</h1>
         <p className="text-center mb-10 max-w-120 mt-10 text-3xl">
           Empowering you to manage legal aid cases with clarity and control.
         </p>

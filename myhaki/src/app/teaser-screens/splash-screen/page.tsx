@@ -3,13 +3,6 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Nunito } from "next/font/google";
-
-const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-nunito',
-});
 
 export default function SplashScreen() {
   const router = useRouter();
@@ -23,9 +16,8 @@ export default function SplashScreen() {
   }, []);
 
   return (
-    <main className="flex flex-col justify-between items-center h-screen bg-white" style={{
-      fontFamily: nunito.style.fontFamily
-    }}>
+    <main className="flex flex-col justify-between items-center h-screen bg-white" 
+>
 
       <div className="flex flex-col items-center mt-24">
         <Image
