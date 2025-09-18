@@ -17,19 +17,21 @@ export async function GET() {
       },
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      return NextResponse.json({ 
-        error: data.detail || 'Failed to fetch' 
-      }, { status: response.status });
+      const errorData = await response.json().catch(() => ({}));
+      return NextResponse.json(
+        { error: errorData.error || 'Failed to fetch lawyers' },
+        { status: response.status }
+      );
     }
 
+    const data = await response.json();
     return NextResponse.json(data);
+
   } catch (error) {
     return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 500 }
+      { throwError: (error as Error).message },
+
     );
   }
 }

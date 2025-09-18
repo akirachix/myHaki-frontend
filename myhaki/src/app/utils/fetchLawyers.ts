@@ -5,11 +5,12 @@ export async function fetchLawyers() {
       cache: 'no-store',
     });
     if (!response.ok) {
-      throw new Error(`Failed to fetch lawyers: ${response.status}`);
+      throw new Error('Something went wrong: ' + response.statusText);
     }
-    return await response.json();
+    return response.json();
+
+
   } catch (error) {
-    console.error('fetchLawyers error:', error);
-    return [];  
+    throw new Error('fetchLawyers error: ' + error);
   }
 }

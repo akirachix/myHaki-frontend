@@ -21,7 +21,6 @@ export async function fetchCases() {
 
     return await response.json();
   } catch (error) {
-    console.error('fetchCases error:', error);
-    return []; 
+    throw new Error('fetchCases error: ' + error);
   }
 }
