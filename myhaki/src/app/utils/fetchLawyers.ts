@@ -1,7 +1,5 @@
 import { getAuthToken } from './authToken';
 
-import { auth_token_key } from "./authToken";
-
 const BASE_URL = 'api/lawyers';
 
 export async function fetchLawyers() {
@@ -12,7 +10,7 @@ export async function fetchLawyers() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...(auth_token_key ? { Authorization: `Token ${auth_token_key}` } : {}),
+        ...(token ? { Authorization: `Token ${token}` } : {}),
       },
       cache: 'no-store',
     });

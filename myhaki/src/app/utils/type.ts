@@ -75,3 +75,15 @@ export interface Lawyer {
     total_points:number;
   }
   
+export interface Detainee {
+    detainee_id: number;
+    first_name: string;
+    last_name: string;
+    id_number: string;
+    gender: string;
+    date_of_birth: string;
+    relation_to_applicant: string;
+    created_at: string;
+    updated_at: string;
+    user: number | null;
+}
