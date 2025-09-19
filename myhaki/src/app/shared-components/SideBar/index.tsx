@@ -2,20 +2,27 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { removeAuthToken } from "@/app/utils/authToken";
 export default function Sidebar() {
     const pathname = usePathname();
+    const router = useRouter();
+    const [showSignOutModal, setShowSignOutModal] = useState(false);
 
     function isActive(path: string) {
         return pathname === path;
     }
 
+    function handleSignOut() {
+        removeAuthToken();
+        router.push("/login"); 
+    }
     return (
         <div className="flex flex-col w-70 min-h-screen ">
             <div className="mb-8">
                 <Image
-                    src="/images/logo-one.png"  
+                    src="/images/logo-one.png"
                     alt="MyHaki Logo"
                     width={500}
                     height={300}
@@ -38,7 +45,6 @@ export default function Sidebar() {
                         href="/cases"
                         className={`rounded-xl p-3 flex items-center gap-4 ml-2 ${isActive("/cases") ? "bg-[#A87352]" : ""}`}
                     >
-                   
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M0.436893 27.4331L14.776 13.1065L12.6848 10.9874L11.6094 12.047C11.4712 12.1853 11.3071 12.2951 11.1264 12.37C10.9457 12.4448 10.752 12.4834 10.5564 12.4834C10.3608 12.4834 10.1671 12.4448 9.98637 12.37C9.80568 12.2951 9.64154 12.1853 9.50336 12.047L8.44287 10.9874C8.3044 10.8493 8.19455 10.6853 8.11959 10.5048C8.04464 10.3243 8.00606 10.1307 8.00606 9.93528C8.00606 9.73982 8.04464 9.54629 8.11959 9.36576C8.19455 9.18522 8.3044 9.02123 8.44287 8.88316L16.8969 0.436431C17.0351 0.298084 17.1993 0.188325 17.3799 0.113436C17.5606 0.0385477 17.7543 0 17.95 0C18.1456 0 18.3393 0.0385477 18.52 0.113436C18.7007 0.188325 18.8648 0.298084 19.003 0.436431L20.0635 1.496C20.646 2.07802 20.646 3.01821 20.0635 3.60022L19.003 4.62995L21.124 6.76402C21.2622 6.62567 21.4263 6.51591 21.607 6.44102C21.7877 6.36614 21.9814 6.32759 22.177 6.32759C22.3726 6.32759 22.5663 6.36614 22.747 6.44102C22.9277 6.51591 23.0918 6.62567 23.23 6.76402C23.8125 7.34604 23.8125 8.30115 23.23 8.88316L25.3361 10.9874L26.3966 9.92781C26.9791 9.3458 27.935 9.3458 28.5176 9.92781L29.5631 10.9874C30.1456 11.5694 30.1456 12.5245 29.5631 13.1065L21.124 21.5383C20.5415 22.1204 19.5855 22.1204 19.003 21.5383L17.9574 20.4937C17.8156 20.356 17.7029 20.1913 17.6259 20.0093C17.5489 19.8273 17.5092 19.6317 17.5092 19.4341C17.5092 19.2365 17.5489 19.041 17.6259 18.859C17.7029 18.677 17.8156 18.5122 17.9574 18.3745L19.003 17.315L16.8969 15.2108L2.54294 29.5523C2.40476 29.6906 2.24062 29.8004 2.05993 29.8753C1.87924 29.9502 1.68554 29.9887 1.48992 29.9887C1.2943 29.9887 1.1006 29.9502 0.919904 29.8753C0.739212 29.8004 0.575076 29.6906 0.436893 29.5523C-0.145631 28.9703 -0.145631 28.0152 0.436893 27.4331ZM26.8745 25.5229C27.6668 25.5229 28.4267 25.8374 28.9869 26.3971C29.5471 26.9569 29.8618 27.716 29.8618 28.5076V30H14.9253V28.5076C14.9253 27.716 15.2401 26.9569 15.8003 26.3971C16.3605 25.8374 17.1203 25.5229 17.9126 25.5229H26.8745Z" fill="white" />
                         </svg>
@@ -49,7 +55,6 @@ export default function Sidebar() {
                         href="/lawyers"
                         className={`rounded-xl  p-3 flex items-center gap-4 ml-2 ${isActive("/lawyers") ? "bg-[#A87352]" : ""}`}
                     >
-                     
                         <svg
                             width="40"
                             height="40"
@@ -81,7 +86,6 @@ export default function Sidebar() {
                         href="/profile"
                         className={`flex items-center gap-4 ml-2 mt-25 ${isActive("/profile") ? "underline" : "hover:underline"}`}
                     >
-                
                         <svg
                             width="35"
                             height="35"
@@ -107,17 +111,45 @@ export default function Sidebar() {
                         Profile
                     </Link>
 
-                    <Link href="/logout" className="flex items-center gap-4 ml-2 hover:underline">
+                    <button
+                        type="button"
+                        className="flex items-center gap-4 ml-2 hover:underline bg-transparent border-0 outline-none cursor-pointer text-white text-left"
+                        onClick={() => setShowSignOutModal(true)}
+                    >
                         <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 13.1579C11.6222 13.1579 11.3058 13.0316 11.0507 12.7789C10.7956 12.5263 10.6676 12.214 10.6667 11.8421V1.31579C10.6667 0.942987 10.7947 0.630706 11.0507 0.378952C11.3067 0.127198 11.6231 0.00088173 12 4.5372e-06C12.3769 -0.000872656 12.6938 0.125443 12.9507 0.378952C13.2076 0.632461 13.3351 0.944741 13.3333 1.31579V11.8421C13.3333 12.2149 13.2053 12.5276 12.9493 12.7803C12.6933 13.0329 12.3769 13.1588 12 13.1579ZM12 25C10.3333 25 8.77244 24.6877 7.31733 24.0632C5.86222 23.4386 4.59555 22.5943 3.51733 21.5303C2.43911 20.4662 1.58356 19.2162 0.950667 17.7803C0.317778 16.3443 0.000888889 14.8035 0 13.1579C0 11.8202 0.222222 10.5206 0.666667 9.25921C1.11111 7.99781 1.75556 6.84123 2.6 5.78948C2.84444 5.48246 3.15556 5.33465 3.53333 5.34606C3.91111 5.35746 4.24444 5.50527 4.53333 5.78948C4.77778 6.0307 4.88889 6.32676 4.86667 6.67763C4.84444 7.02851 4.72222 7.35746 4.5 7.66448C3.9 8.45395 3.44444 9.32018 3.13333 10.2632C2.82222 11.2061 2.66667 12.1711 2.66667 13.1579C2.66667 15.7237 3.57244 17.9004 5.384 19.6882C7.19555 21.4759 9.40089 22.3693 12 22.3684C14.5991 22.3675 16.8049 21.4741 18.6173 19.6882C20.4298 17.9022 21.3351 15.7254 21.3333 13.1579C21.3333 12.1491 21.1836 11.1675 20.884 10.2132C20.5844 9.25877 20.112 8.38728 19.4667 7.59869C19.2444 7.3136 19.1222 7.00132 19.1 6.66184C19.0778 6.32237 19.1889 6.03158 19.4333 5.78948C19.7 5.52632 20.0222 5.38948 20.4 5.37895C20.7778 5.36842 21.0889 5.50527 21.3333 5.78948C22.2 6.84211 22.8613 7.99342 23.3173 9.24342C23.7733 10.4934 24.0009 11.7982 24 13.1579C24 14.8026 23.6836 16.3434 23.0507 17.7803C22.4178 19.2171 21.5622 20.4671 20.484 21.5303C19.4058 22.5934 18.1391 23.4377 16.684 24.0632C15.2289 24.6886 13.6676 25.0009 12 25Z" fill="white" />
                         </svg>
                         Log out
-                    </Link>
+                    </button>
                 </nav>
             </aside>
 
+            {showSignOutModal && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 bg-opacity-10"
+                    aria-modal="true"
+                    role="dialog"
+                >
+                    <div className="bg-white rounded-3xl p-12 flex flex-col items-center shadow-xl min-w-[420px] min-h-[220px]">
+                        <h2 className="text-2xl font-normal mb-12 text-center text-[#282828]">
+                            Are you sure you want<br />to sign out ?
+                        </h2>
+                        <button
+                            onClick={handleSignOut}
+                            className="border border-[#A87352] text-[#A87352] cursor-pointer px-10 py-2 rounded-md text-lg hover:bg-[#f5ede7] transition"
+                        >
+                            Sign out
+                        </button>
+                        <button
+                            onClick={() => setShowSignOutModal(false)}
+                            className="mt-6 cursor-pointer text-[#888] text-sm"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
-
 

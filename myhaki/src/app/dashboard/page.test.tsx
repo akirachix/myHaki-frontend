@@ -1,11 +1,16 @@
 import React from "react";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import DashboardPage from "./page";
 
 jest.mock("../hooks/useFetchCases");
 jest.mock("../hooks/useFetchLawyers");
 jest.mock("../hooks/useFetchCPDPoints");
 jest.mock("../hooks/useFetchLSKAdmin");
+
+jest.mock("next/navigation", () => ({
+  usePathname: jest.fn(() => "/dashboard"),
+  useRouter: jest.fn(() => ({ push: jest.fn() })),
+}));
 
 import useFetchCases from "../hooks/useFetchCases";
 import { useFetchVerifiedLawyers } from "../hooks/useFetchLawyers";
@@ -59,23 +64,17 @@ describe("DashboardPage", () => {
     expect(screen.getByText(/Loading your dashboard/i)).toBeInTheDocument();
   });
 
-  it("renders dashboard with filtered data and admin name", async () => {
+  it("renders dashboard with filtered data and admin name", () => {
     render(<DashboardPage />);
-
     expect(screen.getByText(/Hello, Admin User/i)).toBeInTheDocument();
-
-
     expect(screen.getByText(/CPD Points Rank/i)).toBeInTheDocument();
-
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /open month\/year picker/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /log out/i })).toBeInTheDocument();
   });
 
-  it("filters data by selected month", async () => {
+  it("filters data by selected month", () => {
     render(<DashboardPage />);
-
-    const calendar = screen.getByRole("button");
-    fireEvent.click(calendar);
-
-
+    const calendarBtn = screen.getByRole("button", { name: /open month\/year picker/i });
+    fireEvent.click(calendarBtn);
   });
 });
