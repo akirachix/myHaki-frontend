@@ -1,9 +1,11 @@
+'use client';
 import Cookies from 'js-cookie';
 
-export const auth_token_key = '7b4b2cb877e5bbe2ad4dbe3b65cb5ae6bbc56788';
+export const AUTH_TOKEN_KEY = 'auth_token';
+
 
 export const setAuthToken = (token: string) => {
-  Cookies.set(auth_token_key, token, {
+  Cookies.set(AUTH_TOKEN_KEY, token, {
     expires: 7, 
     secure: true, 
     sameSite: 'strict', 
@@ -12,9 +14,9 @@ export const setAuthToken = (token: string) => {
 };
 
 export const getAuthToken = (): string | undefined => {
-  return Cookies.get(auth_token_key);
+  return Cookies.get(AUTH_TOKEN_KEY);
 };
 
 export const removeAuthToken = () => {
-  Cookies.remove(auth_token_key);
+  Cookies.remove(AUTH_TOKEN_KEY);
 };

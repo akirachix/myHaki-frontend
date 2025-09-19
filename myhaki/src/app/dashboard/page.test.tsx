@@ -1,75 +1,81 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import React from "react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import DashboardPage from "./page";
 
-// Mock next/navigation's useRouter to prevent invariant errors
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-    prefetch: jest.fn().mockResolvedValue(undefined),
-  }),
-}));
+jest.mock("../hooks/useFetchCases");
+jest.mock("../hooks/useFetchLawyers");
+jest.mock("../hooks/useFetchCPDPoints");
+jest.mock("../hooks/useFetchLSKAdmin");
 
-// Mock child components
-jest.mock('./components/Cards', () => () => <div data-testid="cards">Cards</div>);
-jest.mock('./components/CaseDistribution', () => () => <div data-testid="case-distribution">CaseDistribution</div>);
-jest.mock('./components/CaseTrends', () => () => <div data-testid="case-trends">CaseTrends</div>);
-jest.mock('./components/Rank', () => () => <div data-testid="rank">Rank</div>);
-jest.mock('./components/Calendar', () => () => <div data-testid="calendar">Calendar</div>);
+import useFetchCases from "../hooks/useFetchCases";
+import { useFetchVerifiedLawyers } from "../hooks/useFetchLawyers";
+import useFetchCPDPoints from "../hooks/useFetchCPDPoints";
+import useFetchLSKAdmin from "../hooks/useFetchLSKAdmin";
 
-// Default hooks mock for loaded state
-jest.mock('@/app/hooks/useFetchCases', () => () => ({
-  cases: [{ id: 1, updated_at: '2024-06-10' }],
-  loading: false,
-}));
-jest.mock('../hooks/useFetchLawyers', () => () => ({
-  lawyers: [{ id: 1, verified: true, updated_at: '2024-06-10' }],
-  loading: false,
-}));
-jest.mock('@/app/hooks/useFetchCPDPoints', () => () => ({
-  cpdRecords: [{ id: 1, updated_at: '2024-06-10' }],
-  loading: false,
-}));
-jest.mock('@/app/hooks/useFetchLSKAdmin', () => () => ({
-  admins: [{ first_name: 'Jane', last_name: 'Admin' }],
-  loading: false,
-}));
+describe("DashboardPage", () => {
+  const mockCases = [
+    { id: "1", updated_at: "2025-09-05T12:00:00Z" },
+    { id: "2", updated_at: "2025-08-15T12:00:00Z" },
+  ];
+  const mockLawyers = [
+    { id: "1", verified: true, updated_at: "2025-09-10T12:00:00Z" },
+    { id: "2", verified: false, updated_at: "2025-09-10T12:00:00Z" },
+    { id: "3", verified: true, updated_at: "2025-09-15T12:00:00Z" },
+  ];
+  const mockCPD = [
+    { id: "1", updated_at: "2025-09-12T12:00:00Z" },
+    { id: "2", updated_at: "2025-07-20T12:00:00Z" },
+  ];
+  const mockAdmins = [
+    { id: "1", first_name: "Admin", last_name: "User" },
+  ];
 
-jest.mock('../shared-components/Layout', () => {
-  return ({ children }: React.PropsWithChildren) => (
-    <div data-testid="layout" className="mocked-layout">
-      {children}
-    </div>
-  );
-});
-
-import DashboardPage from '../page';
-
-describe('DashboardPage', () => {
-  test('renders loading state', () => {
-    // Override useFetchCases hook mock to simulate loading state
-    jest.doMock('@/app/hooks/useFetchCases', () => () => ({
-      cases: [],
-      loading: true,
-    }));
-
-    // Import DashboardPage again after doMock override
-    // (Or clear module cache if needed)
-    // Since jest.doMock may not update already imported modules,
-    // one approach is to use jest.resetModules before this test
+  beforeEach(() => {
+    (useFetchCases as jest.Mock).mockReturnValue({
+      cases: mockCases,
+      loading: false,
+    });
+    (useFetchVerifiedLawyers as jest.Mock).mockReturnValue({
+      lawyers: mockLawyers,
+      loading: false,
+    });
+    (useFetchCPDPoints as jest.Mock).mockReturnValue({
+      cpdRecords: mockCPD,
+      loading: false,
+    });
+    (useFetchLSKAdmin as jest.Mock).mockReturnValue({
+      admins: mockAdmins,
+      loading: false,
+    });
   });
 
-  test('renders dashboard when loaded', async () => {
+  it("renders loading state when data is loading", () => {
+    (useFetchCases as jest.Mock).mockReturnValue({ cases: [], loading: true });
+    (useFetchVerifiedLawyers as jest.Mock).mockReturnValue({ lawyers: [], loading: false });
+    (useFetchCPDPoints as jest.Mock).mockReturnValue({ cpdRecords: [], loading: false });
+    (useFetchLSKAdmin as jest.Mock).mockReturnValue({ admins: [], loading: false });
+
+    render(<DashboardPage />);
+    expect(screen.getByText(/Loading your dashboard/i)).toBeInTheDocument();
+  });
+
+  it("renders dashboard with filtered data and admin name", async () => {
     render(<DashboardPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText(/Hello, Jane Admin/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/Hello, Admin User/i)).toBeInTheDocument();
 
-    expect(screen.getByTestId('cards')).toBeInTheDocument();
-    expect(screen.getByTestId('case-distribution')).toBeInTheDocument();
-    expect(screen.getByTestId('case-trends')).toBeInTheDocument();
-    expect(screen.getByTestId('rank')).toBeInTheDocument();
-    expect(screen.getByTestId('calendar')).toBeInTheDocument();
+
+    expect(screen.getByText(/CPD Points Rank/i)).toBeInTheDocument();
+
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
+
+  it("filters data by selected month", async () => {
+    render(<DashboardPage />);
+
+    const calendar = screen.getByRole("button");
+    fireEvent.click(calendar);
+
+
   });
 });

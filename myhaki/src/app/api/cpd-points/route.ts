@@ -1,21 +1,29 @@
-import { auth_token_key } from "@/app/utils/authToken";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-    const baseUrl = process.env.BASE_URL;
-  
-  
-    try {
-      const url = `${baseUrl}/cpd-points/`;
+const baseUrl = process.env.BASE_URL;
 
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Token ${auth_token_key}`, 
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      return new Response(JSON.stringify(data), { status: 200 });
-    } catch (error) {
-      return new Response((error as Error).message, { status: 500 });
+export async function GET(request: NextRequest) {
+  try {
+    const token = request.headers.get("authorization")?.split(" ")[1];
+
+    if (!token){
+      throw new Error("Authorization token is required");
+
     }
+    
+    const response = await fetch(`${baseUrl}/cpd-points`, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: (error as Error).message },
+
+    );
   }
+}

@@ -1,18 +1,16 @@
-// import { getAuthToken } from './authToken';
-import { auth_token_key } from "@/app/utils/authToken";
-
+import { getAuthToken } from './authToken';
 
 const BASE_URL = 'api/cases';
 
 export async function fetchCases() {
-  // const token = getAuthToken();
+  const token = getAuthToken();
 
   try {
     const response = await fetch(`${BASE_URL}/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...(auth_token_key ? { Authorization: `Token ${auth_token_key}` } : {}),
+          Authorization: `Token ${token}`,
       },
       cache: 'no-store',
     });

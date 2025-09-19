@@ -1,18 +1,16 @@
-// import { getAuthToken } from './authToken';
-
-import { auth_token_key } from "./authToken";
+import { getAuthToken } from './authToken';
 
 const BASE_URL = 'api/lsk-admin';
 
 export async function fetchLSKAdmin() {
-  // const token = getAuthToken();
+  const token = getAuthToken();
 
   try {
     const response = await fetch(`${BASE_URL}/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...(auth_token_key ? { Authorization: `Token ${auth_token_key}` } : {}),
+        Authorization: `Token ${token}`,
       },
       cache: 'no-store',
     });

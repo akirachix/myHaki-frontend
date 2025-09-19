@@ -6,9 +6,14 @@ export async function GET(request: NextRequest) {
   try {
     const token = request.headers.get("authorization")?.split(" ")[1];
 
+    if (!token){
+      throw new Error("Authorization token is required");
+
+    }
+    
     const response = await fetch(`${baseUrl}/users/?role=lawyer`, {
       headers: {
-        ...(token ? { Authorization: `Token ${token}` } : {}),
+        Authorization: `Token ${token}`,
       },
     });
 

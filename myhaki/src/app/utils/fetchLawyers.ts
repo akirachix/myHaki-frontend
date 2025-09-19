@@ -10,7 +10,7 @@ export async function fetchLawyers() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Token ${token}` } : {}),
+        Authorization: `Token ${token}` ,
       },
       cache: 'no-store',
     });
