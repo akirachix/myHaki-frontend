@@ -3,7 +3,6 @@ import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 // import "./globals.css";
 import { Poppins } from "next/font/google";
-import InitAuthToken from "./components/InitAuthToken";
 
 
 const poppins = Poppins({
@@ -13,7 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "MyHaki Admin App",
+  title: "MyHaki",
   description: "Admin dashboard for managing legal cases",
 };
 
@@ -28,7 +27,6 @@ export default function RootLayout({
         className={`${poppins.variable} antialiased`}
         
       >
-        <InitAuthToken />
         {children}
       </body>
     </html>

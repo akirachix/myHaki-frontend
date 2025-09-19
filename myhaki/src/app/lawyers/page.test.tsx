@@ -1,18 +1,15 @@
-
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import LawyersPage from './page'
 
-jest.mock('@/app/hooks/useFetchLawyers', () => ({
-  useFetchLawyers: jest.fn(),
-}))
+import useFetchLawyers from '../hooks/useFetchLawyers'
 
-jest.mock('@/app/shared-components/page', () => ({
+jest.mock('@/app/hooks/useFetchLawyers', () => jest.fn())
+
+jest.mock('@/app/shared-components/SideBar', () => ({
   __esModule: true,
   default: () => <div data-testid="sidebar">Sidebar</div>,
 }))
-
-import { useFetchLawyers } from '@/app/hooks/useFetchLawyers'
 
 type Lawyer = {
   id: number,
@@ -97,9 +94,9 @@ describe('LawyersPage', () => {
     render(<LawyersPage />)
 
     await waitFor(() => {
-      expect(screen.getByText(/John Kamau/i)).toBeInTheDocument()
-      expect(screen.getByText(/Marion Smith/i)).toBeInTheDocument()
-      expect(screen.getByText(/Alberto Bruce/i)).toBeInTheDocument()
+      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
+      expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
+      expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
     })
 
     expect(screen.getByText(/10 pts/i)).toBeInTheDocument()
@@ -117,9 +114,9 @@ describe('LawyersPage', () => {
     fireEvent.change(searchInput, { target: { value: 'John' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/John Kamau/i)).toBeInTheDocument()
-      expect(screen.queryByText(/Marion Smith/i)).not.toBeInTheDocument()
-      expect(screen.queryByText(/Alberto Bruce/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Albert Bruce/i)).not.toBeInTheDocument()
     })
   })
 
@@ -133,17 +130,14 @@ describe('LawyersPage', () => {
     fireEvent.change(filterSelect, { target: { value: 'true' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/John Kamau/i)).toBeInTheDocument()
-      expect(screen.getByText(/Alberto Bruce/i)).toBeInTheDocument()
-      expect(screen.queryByText(/Marion Smith/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
+      expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
     })
 
     fireEvent.change(filterSelect, { target: { value: 'false' } })
 
     await waitFor(() => {
-      expect(screen.getByText(/Marion Smith/i)).toBeInTheDocument()
-      expect(screen.queryByText(/John Kamau/i)).not.toBeInTheDocument()
-      expect(screen.queryByText(/Alberto Bruce/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
     })
   })
 

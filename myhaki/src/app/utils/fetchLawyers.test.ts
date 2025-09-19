@@ -22,22 +22,18 @@ test('fetchLawyers returns data on success', async () => {
   expect(data).toEqual(mockLawyers);
 });
 
-test('fetchLawyers returns empty array on 500 error', async () => {
+test('fetchLawyers throws error on 500 error', async () => {
   (global.fetch as jest.Mock).mockResolvedValueOnce({
     ok: false,
     status: 500,
     statusText: 'Internal Server Error',
   });
 
-  const data = await fetchLawyers();
-
-  expect(data).toEqual([]);
+  await expect(fetchLawyers()).rejects.toThrow('HTTP 500: Internal Server Error');
 });
 
-test('fetchLawyers returns empty array on network error', async () => {
+test('fetchLawyers throws error on network error', async () => {
   (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
-  const data = await fetchLawyers();
-
-  expect(data).toEqual([]);
+  await expect(fetchLawyers()).rejects.toThrow(/fetchLawyers error: Error: Network error/);
 });

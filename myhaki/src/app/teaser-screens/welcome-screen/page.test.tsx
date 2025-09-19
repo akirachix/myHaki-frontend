@@ -48,6 +48,6 @@ describe('WelcomePageThird', () => {
     const nextButton = screen.getByRole('button', { name: /get started/i });
 
     fireEvent.click(nextButton);
-    expect(mockPush).toHaveBeenCalledWith('signup');
+    expect(mockPush).toHaveBeenCalledWith('/authentication/sign-in');
   });
 });

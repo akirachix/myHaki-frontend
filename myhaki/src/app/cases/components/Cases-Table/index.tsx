@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import useFetchCases, { CaseItem } from "@/app/hooks/useFetchCases";
-import { useFetchLawyers } from "@/app/hooks/useFetchLawyers"; 
+import useFetchCases from "@/app/hooks/useFetchCases";
+import { CaseItem } from "@/app/utils/type";
+import useFetchLawyers from "@/app/hooks/useFetchLawyers"; 
 import CaseDetailModal from "../Case-Detail-Modal";
 
 function normalizeStatus(status: string): string {

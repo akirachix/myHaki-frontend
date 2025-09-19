@@ -6,9 +6,10 @@ export async function fetchDetainees() {
     if (!response.ok) {
       throw new Error('Something went wrong: ' + response.statusText);
     }
-    const result = await response.json();
-    return result;
+    return response.json();
+
+
   } catch (error) {
-    throw new Error('Failed to fetch cases: ' + (error as Error).message);
+    throw new Error('fetchDetainees error: ' + error);
   }
 }

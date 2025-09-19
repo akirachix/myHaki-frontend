@@ -10,7 +10,7 @@ export async function fetchCases() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Token ${token}` } : {}),
+          Authorization: `Token ${token}`,
       },
       cache: 'no-store',
     });
@@ -21,7 +21,6 @@ export async function fetchCases() {
 
     return await response.json();
   } catch (error) {
-    console.error('fetchCases error:', error);
-    return []; 
+    throw new Error('fetchCases error: ' + error);
   }
 }
