@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
     }
     
-    const response = await fetch(`${baseUrl}/users/?role=lawyer`, {
+    const response = await fetch(`${baseUrl}/cpd-points`, {
       headers: {
         Authorization: `Token ${token}`,
       },

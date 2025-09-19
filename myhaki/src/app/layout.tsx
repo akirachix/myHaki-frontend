@@ -10,7 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "MyHaki Admin App",
+  title: "MyHaki",
   description: "Admin dashboard for managing legal cases",
 };
 

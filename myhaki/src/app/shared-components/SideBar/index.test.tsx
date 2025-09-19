@@ -24,7 +24,7 @@ describe("Sidebar", () => {
     render(<Sidebar />);
 
     const casesLink = screen.getByText("Cases").closest("a");
-    expect(casesLink).toHaveClass("underline");
+    expect(casesLink).toHaveClass('bg-[#A87352]');
   });
 
   it("does not highlight or underline links if pathname does not match", () => {

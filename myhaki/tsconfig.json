@@ -5,9 +5,7 @@
      "types": [
       "@testing-library/jest-dom",
       "jest",
-      "node",
-      "vitest/globals",
-      
+      "node",      
     ],
     "allowJs": true,
     "skipLibCheck": true,

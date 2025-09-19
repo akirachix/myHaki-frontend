@@ -1,8 +1,8 @@
 import { getAuthToken } from './authToken';
 
-const BASE_URL = 'api/lawyers';
+const BASE_URL = 'api/lsk-admin';
 
-export async function fetchLawyers() {
+export async function fetchLSKAdmin() {
   const token = getAuthToken();
 
   try {
@@ -10,7 +10,7 @@ export async function fetchLawyers() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Token ${token}` ,
+        Authorization: `Token ${token}`,
       },
       cache: 'no-store',
     });
@@ -21,6 +21,6 @@ export async function fetchLawyers() {
 
     return await response.json();
   } catch (error) {
-    throw new Error('fetchLawyers error: ' + error);
+    throw new Error('fetchLSKAdmin error: ' + error);
   }
 }
