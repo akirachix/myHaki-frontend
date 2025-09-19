@@ -16,10 +16,10 @@ function Legend({ pieItems }: any) {
       {pieItems.map((pieItem: any) => (
         <li key={pieItem.value} className="flex items-center gap-1">
           <span
-            className="inline-block w-3 h-3 rounded-full"
+            className="inline-block w-3 xl:ml-[-65px] h-3 rounded-full"
             style={{ backgroundColor: pieItem.color }}
           />
-          <span className="text-sm text-[#621616]">{pieItem.value}</span>
+          <span className="text-sm xl:text-xl text-[#621616] ">{pieItem.value}</span>
         </li>
       ))}
     </ul>
@@ -50,7 +50,7 @@ export default function CaseTrends({ cases }: CaseTrendsProps) {
         </div>
       ) : (
         <>
-          <div className="relative w-full h-full flex items-center">
+          <div className="relative lg:mt-25 2xl:mt-[-20px] w-full h-full flex 2xl:ml-30">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -80,7 +80,7 @@ export default function CaseTrends({ cases }: CaseTrendsProps) {
               </PieChart>
             </ResponsiveContainer>
 
-            <div className="absolute top-4 left-4">
+            <div className="absolute lg:top-[-95px] 2xl:top-4 left-4">
               <Legend
                 pieItems={pieData.filter(pieItem => pieItem.value > 0).map(d => ({
                   color: d.color,

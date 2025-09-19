@@ -1,16 +1,11 @@
 'use client'
 import { useState, useEffect } from "react";
 import { fetchCPDPoints } from "../utils/fetchCPDPoints";
+import { CPDRecord } from "../utils/type";
 
-interface cpdRecord {
-  cpd_id: number;
-  lawyer: number; 
-  points_earned: number;
-  total_points:number;
-}
 
 const useFetchCPDPoints = () => {
-  const [cpdRecords, setcpdRecords] = useState<cpdRecord[]>([]);
+  const [cpdRecords, setcpdRecords] = useState<CPDRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

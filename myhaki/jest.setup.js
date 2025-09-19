@@ -7,3 +7,10 @@ jest.mock('recharts', () => {
       ResponsiveContainer: ({ children }) => <div style={{ width: 800, height: 400 }}>{children}</div>,
     };
   });
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  console.error.mockRestore();
+});

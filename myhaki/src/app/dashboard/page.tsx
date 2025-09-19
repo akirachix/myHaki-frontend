@@ -4,12 +4,12 @@ import Cards from "./components/Cards";
 import CaseDistribution from "./components/CaseDistribution";
 import CaseTrends from "./components/CaseTrends";
 import Rank from "./components/Rank";
-import Sidebar from "../shared-components/SideBar";
 import CalendarPopup from "./components/Calendar";
 import useFetchCases from "@/app/hooks/useFetchCases";
-import useFetchLawyers from "@/app/hooks/useFetchLawyers";
+import { useFetchVerifiedLawyers } from "../hooks/useFetchLawyers";
 import useFetchCPDPoints from "@/app/hooks/useFetchCPDPoints";
 import useFetchLSKAdmin from "@/app/hooks/useFetchLSKAdmin";
+import Layout from "../shared-components/Layout";
 
 const filterByMonth = (list: any[], date: Date) => {
   const year = date.getFullYear();
@@ -22,16 +22,16 @@ export default function DashboardPage() {
   const [filterDate, setFilterDate] = useState<Date>(new Date());
 
   const { cases, loading: casesLoading } = useFetchCases();
-  const { lawyers, loading: lawyersLoading } = useFetchLawyers();
-  const { cpdTransactions, loading: cpdLoading } = useFetchCPDPoints();
+  const { lawyers, loading: lawyersLoading } = useFetchVerifiedLawyers();
+  const { cpdRecords, loading: cpdLoading } = useFetchCPDPoints();
   const { admins, loading: adminsLoading } = useFetchLSKAdmin();
 
   const isLoading = casesLoading || lawyersLoading || cpdLoading || adminsLoading;
 
   if (isLoading) {
     return (
+    <Layout>
       <div className="flex h-screen bg-gray-50">
-        <Sidebar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#621616] mx-auto mb-4"></div>
@@ -39,6 +39,8 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
+    </Layout>
+
     );
   }
 
@@ -49,15 +51,18 @@ export default function DashboardPage() {
 
   const filteredCases = filterByMonth(cases || [], filterDate);
   const filteredLawyers = filterByMonth(verifiedLawyers, filterDate);
-  const filteredCPDPoints = filterByMonth(cpdTransactions || [], filterDate);
+  const filteredCPDPoints = filterByMonth(cpdRecords || [], filterDate);
 
   const adminUser = admins[0];
   const adminName = adminUser ? `${adminUser.first_name} ${adminUser.last_name}` : "Admin";
 
   return (
+  <Layout>
+
     <div className="flex h-screen bg-gray-50">
-      <Sidebar />
+
       <main className="flex-1 overflow-auto">
+      
         <header className="bg-white shadow-sm p-6 flex justify-between items-center">
           <div>
             <h2 className="text-lg font-medium">Hello, {adminName}</h2>
@@ -82,6 +87,10 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+
     </div>
+  </Layout>
+
+
   );
 }

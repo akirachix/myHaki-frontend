@@ -1,14 +1,8 @@
 'use client'
 import { useState, useEffect } from "react";
 import { fetchLSKAdmin } from "../utils/fetchLSKAdmin";
+import { LSKAdmin } from "../utils/type";
 
-export interface LSKAdmin {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email?: string;
-  role?: string;
-}
 
 const useFetchLSKAdmin = () => {
   const [admins, setAdmins] = useState<LSKAdmin[]>([]);

@@ -1,19 +1,24 @@
-export async function GET() {
-    const baseUrl = process.env.BASE_URL;
-    const token = process.env.AUTH_TOKEN; 
-  
-    const url = `${baseUrl}/users/?role=lawyer`;
-  
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Token ${token}`, 
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      return new Response(JSON.stringify(data), { status: 200 });
-    } catch (error) {
-      return new Response((error as Error).message, { status: 500 });
-    }
+import { NextRequest, NextResponse } from "next/server";
+
+const baseUrl = process.env.BASE_URL;
+
+export async function GET(request: NextRequest) {
+  try {
+    const token = request.headers.get("authorization")?.split(" ")[1];
+
+    const response = await fetch(`${baseUrl}/users/?role=lawyer`, {
+      headers: {
+        ...(token ? { Authorization: `Token ${token}` } : {}),
+      },
+    });
+
+    const result = await response.json();
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: (error as Error).message },
+
+    );
   }
+}

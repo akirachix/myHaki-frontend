@@ -1,15 +1,28 @@
-const baseUrl = '/api/lawyers'; 
+import { getAuthToken } from './authToken';
+
+import { auth_token_key } from "./authToken";
+
+const BASE_URL = 'api/lawyers';
 
 export async function fetchLawyers() {
+  const token = getAuthToken();
+
   try {
-    const response = await fetch(baseUrl);
+    const response = await fetch(`${BASE_URL}/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(auth_token_key ? { Authorization: `Token ${auth_token_key}` } : {}),
+      },
+      cache: 'no-store',
+    });
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch LSK admins: ${response.statusText}`);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    const result = await response.json();
-    return result;
+
+    return await response.json();
   } catch (error) {
-    console.error('Error in fetchLSKAdmin utility:', error);
-    throw new Error(`Failed to fetch LSK admins: ${(error as Error).message}`);
+    throw new Error('fetchLawyers error: ' + error);
   }
 }
