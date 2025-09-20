@@ -2,8 +2,16 @@
 import React, { useEffect } from "react";
 import { useVerifyOtp } from "../../hooks/useFetchVerifyOtp";
 import { useForgotPassword } from "../../hooks/useFetchForgotPassword";
+import Image from "next/image";
 
-function OTPInput({ length = 4, value, onChange, disabled }: any) {
+
+interface OTPVariables{
+  length?: number;
+  value: string;
+  onChange: (otp: string) => void;
+  disabled?: boolean;
+}
+function OTPInput({ length = 4, value, onChange, disabled }: OTPVariables) {
   const inputRefs = React.useRef<Array<HTMLInputElement | null>>(
     new Array(length).fill(null)
   );
@@ -12,7 +20,7 @@ function OTPInput({ length = 4, value, onChange, disabled }: any) {
   const handleChange = (val: string, idx: number) => {
     if (disabled) return;
     if (!/^\d*$/.test(val)) return;
-    const newOtp = otpArr.map((v: any, i: number) => (i === idx ? val : v)).join("");
+    const newOtp = otpArr.map((v, i) => (i === idx ? val : v)).join("");
     onChange(newOtp);
     if (val.length === 1 && idx < length - 1) {
       inputRefs.current[idx + 1]?.focus();
@@ -119,10 +127,12 @@ export default function VerifyOtpPage() {
       </div>
 
       <div className="relative h-[280px] overflow-hidden shadow-lg">
-        <img
+        <Image
           src="/images/lowerpart.png"
           alt="Gavel"
           className="w-full object-cover"
+          width={1000}
+          height={500}
         />
       </div>
     </div>

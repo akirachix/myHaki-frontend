@@ -17,8 +17,14 @@ const caseTypes = [
 
 const stages = ["in_progress", "trial", "arraignment", "bail"];
 
+interface Case {
+  predicted_case_type: string;
+  status: string;
+  stage: string;
+}
+
 interface CaseDistributionProps {
-  cases: any[];
+  cases: Case[];
 }
 
 export default function CaseDistribution({ cases }: CaseDistributionProps) {

@@ -1,15 +1,17 @@
 import React from "react";
-import Image from "next/image";
 import { render, fireEvent, screen } from "@testing-library/react";
 import CaseDistribution from ".";
+import { ImageProps } from 'next/image';
+
 
 
 jest.mock('next/image', () => ({
-    __esModule: true,
-    default: (props: any) => {
-      return <Image {...props} />;
-    },
-  }));
+  __esModule: true,
+  default: (props: ImageProps) => {
+    const { src, alt, ...rest } = props;
+    return <img src={src as string} alt={alt || ''} {...rest} />;
+  },
+}));
 
 
 const mockCases = [
