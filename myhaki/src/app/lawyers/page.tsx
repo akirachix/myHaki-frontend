@@ -5,17 +5,26 @@ import dynamic from 'next/dynamic';
 import useFetchLawyers from "../hooks/useFetchLawyers";
 import Sidebar from '../shared-components/SideBar';
 import { FaCheckCircle } from 'react-icons/fa';
+import { StylesConfig, CSSObjectWithLabel, ActionMeta } from 'react-select';
+import { Lawyer } from '../utils/type';
+import { FilterOption } from '../utils/type';
 
-const Select = dynamic(() => import('react-select'), { ssr: false });
+const TypedSelect = dynamic(
+  () => import('react-select').then(mod => {
+    const TypedComponent: React.ComponentType<React.ComponentProps<typeof mod.default<FilterOption, false>>> = mod.default;
+    return TypedComponent;
+  }),
+  { ssr: false }
+);
 
-const filterOptions = [
+const filterOptions: FilterOption[] = [
   { value: 'all', label: 'All Lawyers' },
   { value: 'true', label: 'Verified' },
   { value: 'false', label: 'Unverified' },
 ];
 
-const customStyles = {
-  control: (provided: any) => ({
+const customStyles: StylesConfig<FilterOption, false> = {
+  control: (provided: CSSObjectWithLabel) => ({
     ...provided,
     borderColor: '#b8906e',
     boxShadow: 'none',
@@ -25,24 +34,24 @@ const customStyles = {
     borderRadius: 8,
     minHeight: '40px',
   }),
-  option: (provided: any, state: any) => ({
+  option: (provided: CSSObjectWithLabel, state) => ({
     ...provided,
     backgroundColor: state.isFocused ? '#b8906e' : 'white',
     color: state.isFocused ? 'white' : '#4b3b26',
     cursor: 'pointer',
   }),
-  singleValue: (provided: any) => ({
+  singleValue: (provided: CSSObjectWithLabel) => ({
     ...provided,
     color: '#4b3b26',
   }),
-  dropdownIndicator: (provided: any) => ({
+  dropdownIndicator: (provided: CSSObjectWithLabel) => ({
     ...provided,
     color: '#b8906e',
   }),
   indicatorSeparator: () => ({
     display: 'none',
   }),
-  menu: (provided: any) => ({
+  menu: (provided: CSSObjectWithLabel) => ({
     ...provided,
     borderRadius: 8,
     overflow: 'hidden',
@@ -57,7 +66,7 @@ export default function LawyersPage() {
   const itemsPerPage = 7;
 
   const filteredLawyers = useMemo(() => {
-    let result = Array.isArray(lawyers) ? lawyers : [];
+    let result: Lawyer[] = Array.isArray(lawyers) ? lawyers : [];
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       result = result.filter(lawyer =>
@@ -73,7 +82,7 @@ export default function LawyersPage() {
     return result;
   }, [lawyers, searchQuery, filterVerified]);
 
-  function getRoles(lawyer: any) {
+  function getRoles(lawyer: Lawyer) {
     const roles: string[] = [];
     if (lawyer.criminal_law) roles.push("Criminal law");
     if (lawyer.constitutional_law) roles.push("Constitutional law");
@@ -104,7 +113,7 @@ export default function LawyersPage() {
     setCurrentPage(1);
   };
 
-  const handleFilterChange = (selectedOption: any) => {
+  const handleFilterChange = (selectedOption: FilterOption | null) => {
     setFilterVerified(selectedOption?.value || 'all');
     setCurrentPage(1);
   };
@@ -143,7 +152,7 @@ export default function LawyersPage() {
           </div>
 
           <div className="w-full sm:w-48 text-gray-700">
-            <Select
+            <TypedSelect
               options={filterOptions}
               value={filterOptions.find(opt => opt.value === filterVerified)}
               onChange={handleFilterChange}
@@ -173,7 +182,7 @@ export default function LawyersPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
                   {currentLawyers.length > 0 ? (
-                    currentLawyers.map((lawyer) => (
+                    currentLawyers.map((lawyer: Lawyer) => (
                       <tr
                         key={lawyer.id}
                         className="hover:bg-amber-50 transition-colors border border-gray-200 duration-150 ease-in-out group"
