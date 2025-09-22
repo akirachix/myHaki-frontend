@@ -29,22 +29,14 @@ export function useForgotPassword() {
       } else {
         throw new Error(res?.detail || res?.error || "Error sending OTP.");
       }
-    } catch (err: unknown) {
-     let errorMessage = "Failed to send OTP. Please try again later.";
-
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (typeof err === 'string') {
-        errorMessage = err;
-      }
-
-      setStatus({ 
-        error: errorMessage, 
-        message: "", 
-        loading: false 
+    }  catch (err) {
+      setStatus({
+        error: (err as Error).message || "Failed to resend OTP. Please try again later.",
+        message: "",
+        loading: false,
       });
     }
-  };
+};
 
   return {
     email,
