@@ -10,10 +10,15 @@ const stages = [
   { key: "completed", label: "Completed", color: "#F1CCCC" },
 ];
 
-function Legend({ pieItems }: any) {
+interface PieItem {
+  color: string;
+  value: string; 
+}
+
+function Legend({ pieItems }: { pieItems: PieItem[] }) {
   return (
     <ul className="list-none p-0 m-0 flex flex-col items-start gap-1">
-      {pieItems.map((pieItem: any) => (
+      {pieItems.map((pieItem) => (
         <li key={pieItem.value} className="flex items-center gap-1">
           <span
             className="inline-block w-3 xl:ml-[-65px] h-3 rounded-full"
@@ -26,8 +31,13 @@ function Legend({ pieItems }: any) {
   );
 }
 
+interface Case {
+  stage: string;
+}
+
+
 interface CaseTrendsProps {
-  cases: any[];
+  cases: Case[];
 }
 
 export default function CaseTrends({ cases }: CaseTrendsProps) {

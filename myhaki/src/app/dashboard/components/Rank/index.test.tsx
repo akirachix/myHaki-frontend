@@ -1,10 +1,14 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Rank from ".";
+import { ImageProps } from 'next/image';
 
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props: any) => <img {...props} />,
+  default: (props: ImageProps) => {
+    const { src, alt, ...rest } = props;
+    return <img src={src as string} alt={alt || ''} {...rest} />;
+  },
 }));
 
 const mockLawyers = [

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import ResetPasswordPage from "./page"; 
+import ResetPasswordPage from "./resetPassword"; 
 import { useResetPassword } from "../../hooks/useFetchResetPassword";
 
 jest.mock("../../hooks/useFetchResetPassword");
