@@ -24,6 +24,11 @@ export interface Lawyer {
     regional_and_international_law: boolean;
     mining_law: boolean;
    }
+export interface DependentsInfo {
+  count: number;
+  description: string;
+}
+
    export interface CaseItem {
      case_id: number;
      detainee: number;
@@ -51,7 +56,7 @@ export interface Lawyer {
      longitude: string;
      income_source: string;
      monthly_income: string;
-     dependents: any;
+     dependents: DependentsInfo | null;
      stage: string;
      status: string;
      created_at: string;
@@ -73,6 +78,7 @@ export interface Lawyer {
     lawyer: number; 
     points_earned: number;
     total_points:number;
+    updated_at?: string;
   }
   
 export interface Detainee {
@@ -86,4 +92,14 @@ export interface Detainee {
     created_at: string;
     updated_at: string;
     user: number | null;
+}
+
+export interface SelectOption {
+  value: string;
+  label: string;
+}
+
+export interface FilterOption {
+  value: string;
+  label: string;
 }

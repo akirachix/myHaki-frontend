@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import VerifyOtpPage from "./page";
+import VerifyOtpPage from "./verifyOtpClient";
 import { useVerifyOtp } from "../../hooks/useFetchVerifyOtp";
 import { useForgotPassword } from "../../hooks/useFetchForgotPassword";
 import { useRouter } from "next/navigation";

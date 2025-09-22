@@ -57,7 +57,7 @@ export default function WelcomePageFirst() {
             Next
           </button>
           <button
-            onClick={() =>router.push('/signup')}
+            onClick={() =>router.push('/authentication/sign-in')}
             className="bg-[#A87352] text-white py-1 px-4 rounded font-semibold text-lg hover:bg-grey-100 transition cursor-pointer w-60 h-12"
           >
             Skip

@@ -3,9 +3,20 @@ import React from 'react';
 import Image from 'next/image';
 import { FaCrown } from 'react-icons/fa';
 
+interface CPDRecord {
+  lawyer: number | null;
+  total_points: number;
+}
+
+interface Lawyer {
+  id: number;
+  first_name: string;
+  last_name: string;
+}
+
 interface RankProps {
-  cpdPoints: any[];
-  lawyers: any[];
+  cpdPoints: CPDRecord[];
+  lawyers: Lawyer[];
 }
 
 const Rank = ({ cpdPoints, lawyers }: RankProps) => {

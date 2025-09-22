@@ -4,9 +4,18 @@ import React from "react";
 
 const stages = ["in_progress", "trial", "arraignment", "bail"];
 
+interface Case {
+  status: string;
+  stage: string;
+}
+
+interface Lawyer {
+
+}
+
 interface CardsProps {
-  cases: any[];
-  lawyers: any[];
+  cases: Case[];
+  lawyers: Lawyer[];
 }
 
 

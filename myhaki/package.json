@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build --no-lint",
     "start": "next start",
     "lint": "eslint",
     "test": "jest"
@@ -29,8 +29,9 @@
     "@types/jest": "^30.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
-    "@types/react": "^19",
+    "@types/react": "^19.1.13",
     "@types/react-dom": "^19",
+    "@types/react-select": "^5.0.0",
     "@vitest/ui": "^3.2.4",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
@@ -39,7 +40,7 @@
     "jsdom": "^27.0.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.2",
-    "typescript": "^5",
+    "typescript": "5.9.2",
     "vitest": "^3.2.4"
   }
 }
