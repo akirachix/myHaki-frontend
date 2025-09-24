@@ -71,14 +71,13 @@ describe('ProfilePage', () => {
     await waitFor(() => expect(screen.getByText(/profile updated successfully/i)).toBeInTheDocument());
   });
 
-  it('alerts when save fails', async () => {
-    window.alert = jest.fn();
-    (profileUtils.fetchUpdateUsers as jest.Mock).mockRejectedValue(new Error('Update failed'));
+  it('shows inline error message when save fails', async () => {
+    (profileUtils.fetchUpdateUsers as jest.Mock).mockRejectedValue(new Error('Failed to update profile due to server error'));
     render(<ProfilePage />);
     await screen.findByDisplayValue(mockUser.first_name);
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
 
     fireEvent.click(screen.getByRole('button', { name: /save/i }));
-    await waitFor(() => expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('Failed to update profile')));
+    await waitFor(() => expect(screen.getByText(/failed to update profile/i)).toBeInTheDocument());
   });
 });

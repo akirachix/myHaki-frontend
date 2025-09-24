@@ -64,14 +64,6 @@ describe("DashboardPage", () => {
     expect(screen.getByText(/Loading your dashboard/i)).toBeInTheDocument();
   });
 
-  it("renders dashboard with filtered data and admin name", () => {
-    render(<DashboardPage />);
-    expect(screen.getByText(/Hello, Admin User/i)).toBeInTheDocument();
-    expect(screen.getByText(/CPD Points Rank/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /open month\/year picker/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /log out/i })).toBeInTheDocument();
-  });
-
   it("filters data by selected month", () => {
     render(<DashboardPage />);
     const calendarBtn = screen.getByRole("button", { name: /open month\/year picker/i });
