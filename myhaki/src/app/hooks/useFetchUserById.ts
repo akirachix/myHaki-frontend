@@ -50,8 +50,8 @@ export default function useFetchUserById() {
 
         const data: User = await response.json();
         setUser(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (error) {
+      setError((error as Error).message);
       } finally {
         setLoading(false);
       }

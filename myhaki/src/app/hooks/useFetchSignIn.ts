@@ -19,9 +19,8 @@ export default function useFetchSignin() {
       localStorage.setItem('userId', data.id.toString());
 
       return data;
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
+    } catch (error) {
+      setError((error as Error).message);
     } finally {
       setLoading(false);
     }
