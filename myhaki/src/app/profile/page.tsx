@@ -82,7 +82,7 @@ export default function ProfilePage() {
   async function handleSave() {
     const userId = localStorage.getItem('userId');
     if (!userId) {
-    router.push('/login'); 
+    router.push('/authentication/sign-in'); 
     setSuccessMessage(null);
       return;
     }
