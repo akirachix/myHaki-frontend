@@ -16,21 +16,22 @@ export default function Sidebar() {
 
     function handleSignOut() {
         removeAuthToken();
-        router.push("/login"); 
+        router.push("/authentication/sign-in");
     }
     return (
-        <div className="flex flex-col w-70 min-h-screen ">
-            <div className="mb-8">
+        <div className="flex flex-col w-70 min-h-screen">
+            <div className="flex flex-col -mt-10">
                 <Image
                     src="/images/logo-one.png"
                     alt="MyHaki Logo"
                     width={500}
                     height={300}
                     style={{ transform: "translateY(78px)" }}
+                    className="object-contain"
                 />
             </div>
             <aside className="flex flex-col flex-1 p-4 text-white bg-[#621616]" style={{ marginTop: "-5rem" }}>
-                <nav className="flex flex-col gap-8 mt-50 text-xl ml-8">
+                  <nav className="flex flex-col gap-6 mt-55 text-xl">
                     <Link
                         href="/dashboard"
                         className={`rounded-xl p-3 flex items-center gap-4 ${isActive("/dashboard") ? "bg-[#A87352]" : ""}`}
@@ -84,7 +85,7 @@ export default function Sidebar() {
 
                     <Link
                         href="/profile"
-                        className={`flex items-center gap-4 ml-2 mt-25 ${isActive("/profile") ? "underline" : "hover:underline"}`}
+                        className={`flex rounded-xl  p-3  items-center gap-4 ml-2 mt-25 ${isActive("/profile") ? "bg-[#A87352]" : ""}`}
                     >
                         <svg
                             width="35"
@@ -113,7 +114,7 @@ export default function Sidebar() {
 
                     <button
                         type="button"
-                        className="flex items-center gap-4 ml-2 hover:underline bg-transparent border-0 outline-none cursor-pointer text-white text-left"
+                        className="flex items-center gap-4 ml-2 rounded-xl  p-3 bg-[#A87352] bg-transparent border-0 outline-none cursor-pointer text-white text-left"
                         onClick={() => setShowSignOutModal(true)}
                     >
                         <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">

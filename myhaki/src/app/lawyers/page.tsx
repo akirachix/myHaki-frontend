@@ -54,7 +54,7 @@ export default function LawyersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterVerified, setFilterVerified] = useState<string>("all");
-  const itemsPerPage = 7;
+  const itemsPerPage = 6;
 
   const filteredLawyers = useMemo(() => {
     let result = Array.isArray(lawyers) ? lawyers : [];
@@ -116,7 +116,9 @@ export default function LawyersPage() {
       </div>
 
       <div className="flex-1 p-6 overflow-hidden">
-        <h1 className="mt-15 text-2xl md:text-3xl font-bold text-red-900 mb-6 md:mb-8 tracking-tight">Lawyers</h1>
+      <h1 className="mt-10 text-2xl md:text-3xl font-bold text-red-900 mb-6">
+  Lawyers
+</h1>
 
         <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div className="relative max-w-md w-full text-gray-800">

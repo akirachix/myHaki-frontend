@@ -7,7 +7,9 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test": "jest"
+    "test": "jest",
+    "proxy": "https://myhaki-3e53581dd62e.herokuapp.com"
+
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

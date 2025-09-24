@@ -1,7 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import LawyersPage from './page'
-
 import useFetchLawyers from '../hooks/useFetchLawyers'
 
 jest.mock('@/app/hooks/useFetchLawyers', () => jest.fn())
@@ -82,23 +81,18 @@ describe('LawyersPage', () => {
 
   it('shows loading state initially', () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: [], loading: true })
-
     render(<LawyersPage />)
-
     expect(screen.getByText(/Loading lawyers.../i)).toBeInTheDocument()
   })
 
   it('renders lawyers table when data loads', async () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: mockLawyers, loading: false })
-
     render(<LawyersPage />)
-
     await waitFor(() => {
       expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
       expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
       expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
     })
-
     expect(screen.getByText(/10 pts/i)).toBeInTheDocument()
     expect(screen.getByText(/5 pts/i)).toBeInTheDocument()
     expect(screen.getByText(/Corporate law, Pro bono services, Regional & International law/i)).toBeInTheDocument()
@@ -106,13 +100,9 @@ describe('LawyersPage', () => {
 
   it('filters lawyers by search query', async () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: mockLawyers, loading: false })
-
     render(<LawyersPage />)
-
     const searchInput = screen.getByPlaceholderText(/Search by name.../i)
-
     fireEvent.change(searchInput, { target: { value: 'John' } })
-
     await waitFor(() => {
       expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
       expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument()
@@ -122,20 +112,14 @@ describe('LawyersPage', () => {
 
   it('filters by verified status', async () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: mockLawyers, loading: false })
-
     render(<LawyersPage />)
-
     const filterSelect = screen.getByRole('combobox')
-
     fireEvent.change(filterSelect, { target: { value: 'true' } })
-
     await waitFor(() => {
       expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
       expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument()
     })
-
     fireEvent.change(filterSelect, { target: { value: 'false' } })
-
     await waitFor(() => {
       expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument()
     })
@@ -159,27 +143,21 @@ describe('LawyersPage', () => {
 
   it('paginates lawyers list', async () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: manyLawyers, loading: false })
-
     render(<LawyersPage />)
-
     await waitFor(() => {
       expect(screen.getByText(/Lawyer1 Test/i)).toBeInTheDocument()
       expect(screen.getByText(/Lawyer7 Test/i)).toBeInTheDocument()
       expect(screen.queryByText(/Lawyer8 Test/i)).not.toBeInTheDocument()
     })
-
     const nextPageButton = screen.getByText(/Next →/i)
     fireEvent.click(nextPageButton)
-
     await waitFor(() => {
       expect(screen.getByText(/Lawyer8 Test/i)).toBeInTheDocument()
       expect(screen.getByText(/Lawyer10 Test/i)).toBeInTheDocument()
       expect(screen.queryByText(/Lawyer1 Test/i)).not.toBeInTheDocument()
     })
-
     const prevPageButton = screen.getByText(/← Previous/i)
     fireEvent.click(prevPageButton)
-
     await waitFor(() => {
       expect(screen.getByText(/Lawyer1 Test/i)).toBeInTheDocument()
       expect(screen.queryByText(/Lawyer8 Test/i)).not.toBeInTheDocument()
@@ -188,23 +166,17 @@ describe('LawyersPage', () => {
 
   it('disables pagination buttons on first/last page', async () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: manyLawyers, loading: false })
-
     render(<LawyersPage />)
-
     await waitFor(() => {
       const prevButton = screen.getByText(/← Previous/i)
       const nextButton = screen.getByText(/Next →/i)
-
       expect(prevButton).toBeDisabled()
       expect(nextButton).not.toBeDisabled()
-
       fireEvent.click(nextButton)
     })
-
     await waitFor(() => {
       const prevButton = screen.getByText(/← Previous/i)
       const nextButton = screen.getByText(/Next →/i)
-
       expect(prevButton).not.toBeDisabled()
       expect(nextButton).toBeDisabled()
     })
@@ -212,9 +184,7 @@ describe('LawyersPage', () => {
 
   it('renders sidebar', () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: [], loading: false })
-
     render(<LawyersPage />)
-
     expect(screen.getByTestId('sidebar')).toBeInTheDocument()
   })
 })

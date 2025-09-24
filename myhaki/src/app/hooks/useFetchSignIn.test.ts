@@ -1,144 +1,79 @@
-import { renderHook, act } from "@testing-library/react";
-import { useSignIn } from "./useFetchSignIn";
-import * as fetchSignInModule from "../utils/fetchSignIn";
-import * as authTokenModule from "../utils/authToken";
-import { useRouter } from "next/navigation";
+import { renderHook, act } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
+import useFetchSignin from './useFetchSignIn';
+import * as fetchSigninModule from '../utils/fetchSignin';
+import * as authTokenModule from '../utils/authToken';
 
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
-}));
+jest.mock('../utils/fetchSignin');
+jest.mock('../utils/authToken');
 
-jest.mock("../utils/fetchSignIn", () => ({
-  signInApi: jest.fn(),
-}));
-
-jest.mock("../utils/authToken", () => ({
-  setAuthToken: jest.fn(),
-  removeAuthToken: jest.fn(),
-}));
-
-describe("useSignIn hook", () => {
-  const mockPush = jest.fn();
-  const mockSignInApi = fetchSignInModule.signInApi as jest.Mock;
+describe('useFetchSignin', () => {
+  const mockFetchSignin = fetchSigninModule.fetchSignin as jest.Mock;
   const mockSetAuthToken = authTokenModule.setAuthToken as jest.Mock;
-  const mockRemoveAuthToken = authTokenModule.removeAuthToken as jest.Mock;
-
-  beforeAll(() => {
-    jest.useFakeTimers();
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-  });
 
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
     jest.clearAllMocks();
+    localStorage.clear();
   });
 
-  it("initializes with empty email, password, error and message", () => {
-    const { result } = renderHook(() => useSignIn());
-    expect(result.current.email).toBe("");
-    expect(result.current.password).toBe("");
-    expect(result.current.error).toBe("");
-    expect(result.current.message).toBe("");
+  it('initial loading and error states', () => {
+    const { result } = renderHook(() => useFetchSignin());
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
   });
 
-  it("sets error if password is shorter than 6 characters", async () => {
-    const { result } = renderHook(() => useSignIn());
+  it('sets loading true immediately after signin called', async () => {
+    mockFetchSignin.mockResolvedValue({ token: 'token123', id: 1 });
+    const { result } = renderHook(() => useFetchSignin());
+
+    expect(result.current.loading).toBe(false);
 
     act(() => {
-      result.current.setEmail("test@example.com");
-      result.current.setPassword("123");
+      result.current.signin('email', 'password');
     });
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(true);
+    });
+  });
+
+  it('fetchSignin success sets token, userId and clears error/loading', async () => {
+    const mockData = { token: 'token123', id: 5 };
+    mockFetchSignin.mockResolvedValue(mockData);
+
+    const { result } = renderHook(() => useFetchSignin());
 
     await act(async () => {
-      await result.current.handleSignIn();
+      const resp = await result.current.signin('user@example.com', 'password');
+      expect(resp).toEqual(mockData);
     });
 
-    expect(result.current.error).toBe("Password must be at least 6 characters.");
-    expect(mockSignInApi).not.toHaveBeenCalled();
+    expect(mockFetchSignin).toHaveBeenCalledWith('user@example.com', 'password');
+    expect(mockSetAuthToken).toHaveBeenCalledWith(mockData.token);
+    expect(localStorage.getItem('userId')).toBe('5');
+    expect(result.current.error).toBeNull();
+    expect(result.current.loading).toBe(false);
   });
 
-  it("sets auth token and message, then routes on successful admin sign in", async () => {
-    mockSignInApi.mockResolvedValue({ token: "token123", role: "lsk_admin" });
+  it('handles signin failure and sets error/loading', async () => {
+    const error = new Error('Invalid credentials');
+    mockFetchSignin.mockRejectedValue(error);
 
-    const { result } = renderHook(() => useSignIn());
-
-    act(() => {
-      result.current.setEmail("admin@example.com");
-      result.current.setPassword("password");
-    });
+    const { result } = renderHook(() => useFetchSignin());
 
     await act(async () => {
-      await result.current.handleSignIn();
+      try {
+        await result.current.signin('user@example.com', 'wrongpass');
+      } catch {
+      }
     });
 
-    act(() => {
-      jest.runAllTimers();
+    await waitFor(() => {
+      expect(result.current.error).toBe('Invalid credentials');
+      expect(result.current.loading).toBe(false);
     });
 
-    expect(mockSetAuthToken).toHaveBeenCalledWith("token123");
-    expect(result.current.message).toBe("Sign in successful!");
-    expect(mockPush).toHaveBeenCalledWith("/profile");
-    expect(result.current.error).toBe("");
-  });
-
-  it("removes auth token and sets error if role is not lsk_admin", async () => {
-    mockSignInApi.mockResolvedValue({ token: "token123", role: "user" });
-
-    const { result } = renderHook(() => useSignIn());
-
-    act(() => {
-      result.current.setEmail("user@example.com");
-      result.current.setPassword("password");
-    });
-
-    await act(async () => {
-      await result.current.handleSignIn();
-    });
-
-    expect(mockSetAuthToken).toHaveBeenCalledWith("token123");
-    expect(mockRemoveAuthToken).toHaveBeenCalled();
-    expect(result.current.error).toBe("Only users with lsk admin role can sign in.");
-    expect(result.current.message).toBe("");
-    expect(mockPush).not.toHaveBeenCalled();
-  });
-
-  it("sets error when signInApi throws", async () => {
-    mockSignInApi.mockRejectedValue(new Error("Network error"));
-
-    const { result } = renderHook(() => useSignIn());
-
-    act(() => {
-      result.current.setEmail("fail@example.com");
-      result.current.setPassword("password");
-    });
-
-    await act(async () => {
-      await result.current.handleSignIn();
-    });
-
-    expect(result.current.error).toBe("Network error");
-    expect(result.current.message).toBe("");
     expect(mockSetAuthToken).not.toHaveBeenCalled();
-  });
-
-  it("sets error if no token in response", async () => {
-    mockSignInApi.mockResolvedValue({ role: "lsk_admin" });
-
-    const { result } = renderHook(() => useSignIn());
-
-    act(() => {
-      result.current.setEmail("admin@example.com");
-      result.current.setPassword("password");
-    });
-
-    await act(async () => {
-      await result.current.handleSignIn();
-    });
-
-    expect(result.current.error).toBe("No token received from server");
-    expect(mockSetAuthToken).not.toHaveBeenCalled();
+    expect(localStorage.getItem('userId')).toBeNull();
   });
 });
