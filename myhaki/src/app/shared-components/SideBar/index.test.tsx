@@ -7,6 +7,7 @@ jest.mock("next/navigation", () => ({
   usePathname: jest.fn(),
   useRouter: jest.fn(),
 }));
+
 jest.mock("@/app/utils/authToken", () => ({
   removeAuthToken: jest.fn(),
 }));
@@ -60,7 +61,7 @@ describe("Sidebar", () => {
     fireEvent.click(screen.getByText(/Log out/i));
     fireEvent.click(screen.getByRole("button", { name: /^sign out$/i }));
     expect(authToken.removeAuthToken).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith("/login");
+    expect(mockPush).toHaveBeenCalledWith("/authentication/sign-in");
   });
 
   it('closes the modal when "Cancel" is clicked', () => {

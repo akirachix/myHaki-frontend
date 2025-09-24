@@ -33,7 +33,7 @@ export default function CaseTable() {
   const [selectedCase, setSelectedCase] = useState<CaseItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const itemsPerPage = 5;
+  const itemsPerPage = 4;
 
   if (loading || lawyersLoading) return <div className="flex justify-center py-12 text-gray-600">Loading cases...</div>;
   if (error) return <div className="text-[#b8906e] text-center py-12">Error: {error}</div>;
@@ -65,7 +65,7 @@ export default function CaseTable() {
   };
 
   return (
-    <div className="bg-white rounded-2xl [@media(width:1024px)]:ml-[-10%] shadow-xl p-6 overflow-hidden">
+    <div className="bg-white rounded-2xl [@media(width:1024px)]:ml-[-10%] shadow-xl p-6 overflow-hidden -mt-7">
       <div className="mb-1">
         <div className="mt-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
           <input
@@ -109,7 +109,7 @@ export default function CaseTable() {
               currentCases.map((caseItem: CaseItem) => (
                 <tr
                   key={caseItem.case_id}
-                  className="group hover:bg-gradient-to-r from-gray-50 to-gray-25 transition-all duration-200 cursor-pointer border-b border-transparent hover:border-b border-gray-200"
+                  className="group hover:bg-gradient-to-r from-gray-50 to-gray-25 transition-all duration-200 cursor-pointer border-b hover:border-b border-gray-200"
                   onClick={() => setSelectedCase(caseItem)}
                 >
                   <td className="px-6 py-5 whitespace-nowrap text-sm font-medium text-gray-800">

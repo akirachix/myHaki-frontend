@@ -94,6 +94,18 @@ export interface Detainee {
     user: number | null;
 }
 
+
+
+export interface User {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  role: string;
+  image?: string | null;
+}
+
 export interface SelectOption {
   value: string;
   label: string;

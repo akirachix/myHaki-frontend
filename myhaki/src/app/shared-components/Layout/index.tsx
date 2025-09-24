@@ -1,5 +1,4 @@
 import Sidebar from "../SideBar/index";
-
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="dashboard-layout flex">
