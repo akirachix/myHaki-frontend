@@ -1,5 +1,5 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import Layout from '../shared-components/Layout';
 import { User } from '../utils/type';
@@ -14,6 +14,7 @@ type UpdateUserData = {
 };
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [formState, setFormState] = useState<UpdateUserData>({
     first_name: '',
@@ -58,7 +59,7 @@ export default function ProfilePage() {
     return () => {
       if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current);
     };
-  }, []);
+  }, [router]);
 
   function handleImageClick() {
     fileInputRef.current?.click();
@@ -81,8 +82,8 @@ export default function ProfilePage() {
   async function handleSave() {
     const userId = localStorage.getItem('userId');
     if (!userId) {
-      setError('User not logged in');
-      setSuccessMessage(null);
+    router.push('/login'); 
+    setSuccessMessage(null);
       return;
     }
 
@@ -126,10 +127,9 @@ export default function ProfilePage() {
       successTimeoutRef.current = setTimeout(() => {
         setSuccessMessage(null);
       }, 3000);
-    }catch (error) {
+    } catch (err: any) {
+      setError(err.message);
       setSuccessMessage(null);
-      throw new Error((error as Error).message);
-    
     }
   }
 
@@ -154,9 +154,9 @@ export default function ProfilePage() {
   return (
     <div className="overflow-y-hidden">
       <Layout>
-        <main className="flex-grow max-w-4xl mx-auto py-10 px-6 bg-white rounded mt-6">
+        <main className="flex-grow max-w-4xl mx-auto py-10 px-6 bg-white rounded">
           {loading ? (
-            <p className="text-center mt-25">Loading...</p>
+            <p className="text-center mt-20">Loading...</p>
           ) : (
             <>
               <h1 className="text-3xl font-bold mb-6 text-center">My Profile</h1>
@@ -170,7 +170,7 @@ export default function ProfilePage() {
                   {previewImage ? (
                     <img src={previewImage} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="flex items-center justify-center w-full h-full bg-gray-300 text-5xl text-gray-600 mt-15">
+                    <div className="flex items-center justify-center w-full h-full bg-gray-300 text-5xl text-gray-600">
                       {user?.first_name.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -188,7 +188,7 @@ export default function ProfilePage() {
                   </svg>
                 </button>
               </div>
-              <div className="text-center mb-4 gap-10">
+              <div className="text-center mb-6">
                 <h2 className="text-xl font-semibold">{user?.first_name} {user?.last_name}</h2>
                 <p className="text-gray-800">{user?.email}</p>
               </div>
