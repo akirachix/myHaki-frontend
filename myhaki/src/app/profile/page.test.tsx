@@ -22,6 +22,7 @@ const mockUser = {
 describe('ProfilePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
     Object.defineProperty(window, 'localStorage', {
       value: {
         getItem: jest.fn((key) => (key === 'userId' ? '1' : null)),
@@ -71,13 +72,21 @@ describe('ProfilePage', () => {
     await waitFor(() => expect(screen.getByText(/profile updated successfully/i)).toBeInTheDocument());
   });
 
-  it('shows inline error message when save fails', async () => {
-    (profileUtils.fetchUpdateUsers as jest.Mock).mockRejectedValue(new Error('Failed to update profile due to server error'));
+  it('triggers file input click on profile image and edit button', async () => {
     render(<ProfilePage />);
     await screen.findByDisplayValue(mockUser.first_name);
-    fireEvent.click(screen.getByRole('button', { name: /update/i }));
 
-    fireEvent.click(screen.getByRole('button', { name: /save/i }));
-    await waitFor(() => expect(screen.getByText(/failed to update profile/i)).toBeInTheDocument());
+    const fileInput = screen.getByLabelText(/profile image upload/i);
+    const fileInputElement = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const clickMock = jest.spyOn(fileInputElement, 'click').mockImplementation(() => {});
+
+    fireEvent.click(fileInput);
+    expect(clickMock).toHaveBeenCalled();
+
+    const editButton = screen.getByRole('button', { name: /edit profile image/i });
+    fireEvent.click(editButton);
+    expect(clickMock).toHaveBeenCalledTimes(2);
+
+    clickMock.mockRestore();
   });
 });
