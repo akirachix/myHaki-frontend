@@ -7,8 +7,7 @@
     "build": "next build --no-lint",
     "start": "next start",
     "lint": "eslint",
-    "test": "jest",
-    "proxy": "https://myhaki-3e53581dd62e.herokuapp.com"
+    "test": "jest"
 
   },
   "dependencies": {

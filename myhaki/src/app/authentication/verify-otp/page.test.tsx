@@ -19,10 +19,8 @@ describe("VerifyOtpPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock router
     (useRouter as jest.Mock).mockReturnValue({ push: pushMock });
 
-    // Mock hooks
     (useVerifyOtp as jest.Mock).mockReturnValue({
       otp: "",
       setOtp: setOtpMock,
