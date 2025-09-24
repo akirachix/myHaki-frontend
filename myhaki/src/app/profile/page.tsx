@@ -36,8 +36,8 @@ export default function ProfilePage() {
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     if (!userId) {
-      setError('User not logged in');
-      setLoading(false);
+    router.push('/authentication/sign-in'); 
+    setSuccessMessage(null);
       return;
     }
     fetchUserById(userId)
