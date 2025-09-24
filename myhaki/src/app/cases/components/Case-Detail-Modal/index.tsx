@@ -139,11 +139,12 @@ export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalPr
           </p>
           <p className="text-sm text-gray-600">
             <span className="font-medium">Dependents:</span>{' '}
-            {typeof caseItem.dependents === 'object' && caseItem.dependents !== null
+            {caseItem.dependents
               ? `${caseItem.dependents.count || 0} ${caseItem.dependents.description || ''}`.trim() || 'N/A'
-              : caseItem.dependents?.toString() || 'N/A'}
+              : 'N/A'}
           </p>
         </div>
+        Property 'toString' does not exist on type 'never'.ts(2339)
 
         <div className="mt-8 flex justify-end">
           <button

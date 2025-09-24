@@ -56,6 +56,6 @@ describe('WelcomePageSecond', () => {
       const skipButton = screen.getByRole('button', { name: /skip/i });
   
       fireEvent.click(skipButton);
-      expect(mockPush).toHaveBeenCalledWith('/signup');
+      expect(mockPush).toHaveBeenCalledWith('/authentication/sign-in');
     });
 });

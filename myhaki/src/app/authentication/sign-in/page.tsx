@@ -24,19 +24,20 @@ export default function SignInPage() {
     }
   };
 
-  return (
-    <div className="flex min-h-screen bg-white">
-      <div className="w-200 relative">
-        <div className="absolute inset-0 overflow-hidden">
-          <Image
-            src="/signin-images/signinimage.png"
-            alt="Sign In"
-            fill
-            style={{ objectFit: "cover" }}
-            priority
-          />
-        </div>
-      </div>
+ return (
+   <div className="flex min-h-screen bg-white">
+     <div className="w-200 relative">
+       <div className="absolute inset-0 overflow-hidden">
+         <Image
+           src="/signin-images/signinimage.png"
+           alt="Sign In"
+           fill
+           style={{ objectFit: "cover" }}
+           priority
+         />
+       </div>
+     </div>
+
 
       <div className="w-full md:w-1/2 flex flex-col justify-center px-8">
         <h1 className="text-4xl font-bold text-[#7B1824] mb-10 mt-6 text-center">Sign In</h1>
@@ -90,8 +91,9 @@ export default function SignInPage() {
             <a href="/authentication/forgot-password" className="text-xs text-gray-600 no-underline hover:underline">Forgot Password?</a>
           </div>
 
-          {error && <div className="mb-4 text-red-600 text-sm text-center">{error}</div>}
-          {message && <div className="mb-4 text-green-600 text-sm text-center">{message}</div>}
+         {error && <div className="mb-4 text-red-600 text-sm text-center">{error}</div>}
+         {message && <div className="mb-4 text-green-600 text-sm text-center">{message}</div>}
+
 
           <button 
             type="submit"
@@ -105,3 +107,6 @@ export default function SignInPage() {
     </div>
   );
 }
+
+
+

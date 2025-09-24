@@ -1,27 +1,34 @@
+import { NextRequest, NextResponse } from 'next/server';
+
 const baseUrl = process.env.BASE_URL;
-export async function POST(request: Request) {
+
+export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();
+
     if (!email) {
-        return new Response("Invalid request. Please try again,"), {
-            status: 400
-        }
+      return NextResponse.json(
+        { error: "Email is required" },
+        { status: 400 }
+      );
     }
+
     const response = await fetch(`${baseUrl}/forgotpassword/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" }, 
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
+
     const result = await response.json();
-    return new Response(JSON.stringify(result), {
-        status:201,
-        statusText:"OTP generated",
+
+    return NextResponse.json(result, {
+      status: 201,
     });
+
   } catch (error) {
-    return new Response((error as Error).message, {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 }
+    );
   }
-}  
-
-
+}
