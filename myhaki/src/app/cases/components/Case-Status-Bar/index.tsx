@@ -6,11 +6,10 @@ import useFetchCases from '@/app/hooks/useFetchCases';
 
 export default function CaseStatusBar() {
   const { cases, loading } = useFetchCases(); 
-
   const totalCases = cases.length;
 
-  return (
-    <div className="min-h-screen bg-white lg:flex relative">      
+  return ( 
+      <div className="min-h h-screen bg-white lg:flex relative">
       <main className="flex-1 px-4 md:px-8 py-8 ">
         <h1 className="text-3xl text-red-900 font-bold mb-6">Case overview</h1>
         <Image src="/images/case-overview.png" alt="Case Overview Banner" width={1200} height={200} className=" h-[23%] mb-6 rounded-lg shadow-md [@media(width:1024px)]:ml-[-5%] [@media(width:2560px)]:w-400" />

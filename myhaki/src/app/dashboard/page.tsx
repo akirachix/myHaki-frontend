@@ -55,7 +55,7 @@ export default function DashboardPage() {
   return (
     <Layout>
       <div className="flex h-screen bg-gray-50">
-        <main className="flex-1 overflow-auto bg-gray-50">
+        <main className="flex-1 overflow-auto bg-gray-50 [&::-webkit-scrollbar]:hidden">
           <header className="bg-white shadow-sm p-6 flex justify-between items-center">
             <div>
               <h2 className="text-lg font-medium">Hello, {adminName}</h2>

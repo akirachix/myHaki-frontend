@@ -19,9 +19,8 @@ export async function fetchUserById(id: string) {
     }
 
     return await response.json();
-  } catch (error: any) {
-    console.error('Fetch user error:', error.message);
-    throw new Error(error.message);
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
 }
 
@@ -53,9 +52,8 @@ export async function fetchUpdateUsers(
     }
 
     return await response.json();
-  } catch (error: any) {
-    console.error('Update user error:', error.message);
-    throw new Error(error.message);
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
 }
 

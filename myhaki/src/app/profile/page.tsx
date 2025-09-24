@@ -126,9 +126,10 @@ export default function ProfilePage() {
       successTimeoutRef.current = setTimeout(() => {
         setSuccessMessage(null);
       }, 3000);
-    } catch (err: any) {
-      setError(err.message);
+    }catch (error) {
       setSuccessMessage(null);
+      throw new Error((error as Error).message);
+    
     }
   }
 
@@ -153,9 +154,9 @@ export default function ProfilePage() {
   return (
     <div className="overflow-y-hidden">
       <Layout>
-        <main className="flex-grow max-w-4xl mx-auto py-10 px-6 bg-white rounded">
+        <main className="flex-grow max-w-4xl mx-auto py-10 px-6 bg-white rounded mt-6">
           {loading ? (
-            <p className="text-center mt-20">Loading...</p>
+            <p className="text-center mt-25">Loading...</p>
           ) : (
             <>
               <h1 className="text-3xl font-bold mb-6 text-center">My Profile</h1>
@@ -169,7 +170,7 @@ export default function ProfilePage() {
                   {previewImage ? (
                     <img src={previewImage} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="flex items-center justify-center w-full h-full bg-gray-300 text-5xl text-gray-600">
+                    <div className="flex items-center justify-center w-full h-full bg-gray-300 text-5xl text-gray-600 mt-15">
                       {user?.first_name.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -187,7 +188,7 @@ export default function ProfilePage() {
                   </svg>
                 </button>
               </div>
-              <div className="text-center mb-6">
+              <div className="text-center mb-4 gap-10">
                 <h2 className="text-xl font-semibold">{user?.first_name} {user?.last_name}</h2>
                 <p className="text-gray-800">{user?.email}</p>
               </div>

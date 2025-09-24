@@ -31,7 +31,7 @@ export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalPr
 
   return (
     <div className="fixed inset-0 bg-black/45 bg-opacity-10 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl max-h-[90vh]">
         <h2 className="text-2xl font-bold text-[#822727] mb-6">Case Details - Case ID: {caseItem.case_id}</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
