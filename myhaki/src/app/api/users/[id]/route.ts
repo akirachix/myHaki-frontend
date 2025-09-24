@@ -1,16 +1,7 @@
-import { NextRequest } from 'next/server';
-
 const baseUrl = process.env.BASE_URL;
 
-export async function GET(request: NextRequest) {
-  const id = request.nextUrl.pathname.split('/').filter(Boolean).pop();
-
-  if (!id) {
-    return new Response(JSON.stringify({ error: 'User ID is required' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+  const { id } = params;
 
   try {
     const token = request.headers.get('authorization');
@@ -18,30 +9,15 @@ export async function GET(request: NextRequest) {
     if (token) headers['Authorization'] = token;
 
     const response = await fetch(`${baseUrl}/users/${id}/`, { headers });
-    const data = await response.json();
-
-    return new Response(JSON.stringify(data), {
-      status: response.status,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const result = await response.json();
+    return new Response(JSON.stringify(result), { status: 200 });
   } catch (error: any) {
-    return new Response(
-      JSON.stringify({ error: error.message || 'Internal Server Error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
 
-export async function PATCH(request: NextRequest) {
-  const id = request.nextUrl.pathname.split('/').filter(Boolean).pop();
-
-  if (!id) {
-    return new Response(JSON.stringify({ error: 'User ID is required' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+  const { id } = params;
   try {
     const body = await request.json();
     const token = request.headers.get('authorization');
@@ -56,15 +32,10 @@ export async function PATCH(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    const data = await response.json();
-    return new Response(JSON.stringify(data), {
-      status: response.status,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const result = await response.json();
+    return new Response(JSON.stringify(result), { status: response.status });
   } catch (error: any) {
-    return new Response(
-      JSON.stringify({ error: error.message || 'Internal Server Error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
+
