@@ -22,10 +22,12 @@ export async function POST(request: Request) {
 
 
    return new Response(JSON.stringify(result), { status: 200 });
- } catch (error: any) {
-   return new Response(error.message, { status: 500 });
- }
-}
+ }  catch (error) {
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+}}
 
 
 

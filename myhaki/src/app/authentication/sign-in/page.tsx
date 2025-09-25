@@ -1,6 +1,6 @@
 'use client';
-
 import { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import useFetchSignin from '@/app/hooks/useFetchSignIn';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -14,14 +14,16 @@ export default function Signin() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    try {
-      await signin(email, password);
-      router.push('/dashboard');
-    } catch {
-    }
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault(); 
+  try {
+    await signin(email, password); 
+    router.push('/dashboard');     
+  } catch (err: any) {
+    console.error(err);
   }
+}
+
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -80,7 +82,7 @@ export default function Signin() {
           </div>
 
 
-          <div className="flex justify-end mb-6">
+          <div className="flex justify-end mb-6 mt-3">
             <a
               href="/authentication/forgot-password"
               className="text-xs text-gray-600 no-underline hover:underline"
@@ -98,7 +100,7 @@ export default function Signin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#A97B5A] hover:bg-[#8b6344] disabled:opacity-50 text-white py-2 rounded font-semibold"
+            className="w-3/4 bg-[#A97B5A] hover:bg-[#8b6344] disabled:opacity-50 text-white py-2 ml-10 rounded font-semibold"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

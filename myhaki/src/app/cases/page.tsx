@@ -2,8 +2,6 @@
 import React from 'react';
 import CaseStatusBar from './components/Case-Status-Bar';
 import Layout from '../shared-components/Layout';
-
-
 export default function Cases() {
   return (
     

@@ -1,6 +1,5 @@
 
 import { getAuthToken } from './authToken';
-
 const baseUrl = '/api/users';
 
 export async function fetchUserById(id: string) {
@@ -19,8 +18,8 @@ export async function fetchUserById(id: string) {
     }
 
     return await response.json();
-  } catch (error: any) {
-    throw new Error(error.message);
+  }  catch (error) {
+    throw new Error((error as Error).message);
   }
 }
 
@@ -65,14 +64,14 @@ export async function fetchUpdateUsers(
       body,
     });
 
-    if (!response.ok) {
+    if (response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || 'Profile updated successfully');
     }
 
     return await response.json();
-  } catch (error: any) {
-    console.error('Update user error:', error.message);
-    throw new Error(error.message);
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
 }
+

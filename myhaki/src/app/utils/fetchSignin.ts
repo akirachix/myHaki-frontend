@@ -18,9 +18,9 @@ export async function fetchSignin(email: string, password: string) {
 
    const result = await response.json();
    return result;
- } catch (error: any) {
-   throw new Error(error.message);
- }
+ }catch (error) {
+    throw new Error('Failed to signin; ' + (error as Error).message);
+  }
 }
 
 
