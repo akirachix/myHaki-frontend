@@ -4,22 +4,27 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import useFetchSignin from '@/app/hooks/useFetchSignIn';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Eye, EyeOff } from 'lucide-react';
+
 
 export default function Signin() {
   const [email, setEmail] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const { signin, loading, error } = useFetchSignin();
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    try {
-      await signin(email, password);
-      router.push('/dashboard');
-    } catch {
-    }
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault(); 
+  try {
+    await signin(email, password); 
+    router.push('/dashboard');     
+  } catch (err: any) {
+    console.error(err);
   }
+}
+
+
   return (
     <div className="flex min-h-screen bg-white">
       <div className="w-200 relative hidden md:block">
@@ -50,12 +55,14 @@ export default function Signin() {
             autoComplete="email"
             className="border rounded w-full py-2 px-3 mb-6 focus:outline-none"
           />
+
+
           <label htmlFor="password" className="block mb-2 text-gray-700 font-medium">
             Password
           </label>
-          <div className="relative">
+          <div className="relative mb-6">
             <input
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               id="password"
               placeholder="Your password"
               value={password}
@@ -67,13 +74,13 @@ export default function Signin() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-600"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              tabIndex={0}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600"
             >
-              {showPassword ? <FaEye /> : <FaEyeSlash />}
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
+
 
           <div className="flex justify-end mb-6 mt-3">
             <a

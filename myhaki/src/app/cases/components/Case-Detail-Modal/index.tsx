@@ -82,7 +82,7 @@ export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalPr
               <span
                 className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full capitalize ${
                   caseItem.status.toLowerCase() === 'pending' ? 'bg-red-800 text-red-100' :
-                  caseItem.status.toLowerCase() === 'accepted' ? 'bg-[#F1C08B] text-gray-600' :
+                  caseItem.status.toLowerCase() === 'accepted' ? 'bg-[#f1c08b] text-gray-600' :
                   caseItem.status.toLowerCase() === 'completed' ? 'bg-green-600 text-green-100' :
                   caseItem.status.toLowerCase() === 'in_progress' ? 'bg-blue-100 text-blue-800' :
                   'bg-gray-100 text-gray-800'

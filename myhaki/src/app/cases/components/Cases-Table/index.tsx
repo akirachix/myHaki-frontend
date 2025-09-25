@@ -54,7 +54,7 @@ export default function CaseTable() {
     return lawyer ? lawyer.first_name : 'Unassigned';
   };
   return (
-    <div className="bg-white rounded-2xl [@media(width:1024px)]:ml-[-10%] shadow-xl p-6 overflow-hidden -mt-7">
+    <div className="bg-white rounded-2xl [@media(width:1024px)]:ml-[-10%] mb-3 shadow-xl p-6 overflow-hidden -mt-7">
       <div className="mb-1">
         <div className="mt-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
           <input
