@@ -12,7 +12,7 @@ export async function fetchSignin(email: string, password: string) {
 
    if (!response.ok) {
      const errorData = await response.json();
-     throw new Error(errorData.detail || 'Invalid email or password');
+     throw new Error(errorData.detail || 'User is unauthorized');
    }
 
 

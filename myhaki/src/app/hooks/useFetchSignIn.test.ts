@@ -16,14 +16,8 @@ describe('useFetchSignin', () => {
     localStorage.clear();
   });
 
-  it('initial loading and error states', () => {
-    const { result } = renderHook(() => useFetchSignin());
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
-  });
-
   it('sets loading true immediately after signin called', async () => {
-    mockFetchSignin.mockResolvedValue({ token: 'token123', id: 1 });
+    mockFetchSignin.mockResolvedValue({ token: 'token123', id: 1, role: 'lsk_admin' });
     const { result } = renderHook(() => useFetchSignin());
 
     expect(result.current.loading).toBe(false);
@@ -38,7 +32,7 @@ describe('useFetchSignin', () => {
   });
 
   it('fetchSignin success sets token, userId and clears error/loading', async () => {
-    const mockData = { token: 'token123', id: 5 };
+    const mockData = { token: 'token123', id: 5, role: 'lsk_admin' };
     mockFetchSignin.mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useFetchSignin());
@@ -72,6 +66,20 @@ describe('useFetchSignin', () => {
       expect(result.current.error).toBe('Invalid credentials');
       expect(result.current.loading).toBe(false);
     });
+
+    expect(mockSetAuthToken).not.toHaveBeenCalled();
+    expect(localStorage.getItem('userId')).toBeNull();
+  });
+
+  it('throws error if user is not an lsk_admin', async () => {
+    const nonAdminData = { token: 'token123', id: 7, role: 'user' };
+    mockFetchSignin.mockResolvedValue(nonAdminData);
+
+    const { result } = renderHook(() => useFetchSignin());
+
+    await expect(result.current.signin('user@example.com', 'password')).rejects.toThrow(
+      'Unauthorized: user is not an lsk_admin'
+    );
 
     expect(mockSetAuthToken).not.toHaveBeenCalled();
     expect(localStorage.getItem('userId')).toBeNull();
