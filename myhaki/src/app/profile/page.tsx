@@ -1,4 +1,6 @@
+
 'use client';
+
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import Layout from '../shared-components/Layout';
@@ -11,10 +13,12 @@ type UpdateUserData = {
   email: string;
   phone_number: string;
   password?: string;
+  imageFile?: File;
 };
 
 export default function ProfilePage() {
   const router = useRouter();
+
   const [user, setUser] = useState<User | null>(null);
   const [formState, setFormState] = useState<UpdateUserData>({
     first_name: '',
@@ -23,21 +27,23 @@ export default function ProfilePage() {
     phone_number: '',
     password: '',
   });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const successTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     if (!userId) {
-    router.push('/authentication/sign-in'); 
-    setSuccessMessage(null);
+      router.push('/authentication/sign-in');
+      setSuccessMessage(null);
       return;
     }
     fetchUserById(userId)
@@ -82,8 +88,8 @@ export default function ProfilePage() {
   async function handleSave() {
     const userId = localStorage.getItem('userId');
     if (!userId) {
-    router.push('/authentication/sign-in'); 
-    setSuccessMessage(null);
+      router.push('/authentication/sign-in');
+      setSuccessMessage(null);
       return;
     }
 
@@ -108,6 +114,7 @@ export default function ProfilePage() {
       last_name: formState.last_name,
       email: formState.email,
       phone_number: formState.phone_number,
+      imageFile: imageFile || undefined,
     };
     if (formState.password && formState.password.trim() !== '') {
       payload.password = formState.password.trim();
@@ -116,13 +123,14 @@ export default function ProfilePage() {
     try {
       const updatedUser = await fetchUpdateUsers(userId, payload);
       if (!updatedUser) {
-        setError('Failed to update profile: No response from server.');
+        setError('Profile updated successfully');
         return;
       }
       setUser(updatedUser);
       setEditing(false);
       setSuccessMessage('Profile updated successfully');
       setImageFile(null);
+
       if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current);
       successTimeoutRef.current = setTimeout(() => {
         setSuccessMessage(null);
@@ -199,16 +207,45 @@ export default function ProfilePage() {
               <form className="grid grid-cols-2 gap-x-12 gap-y-6 max-w-3xl mx-auto" encType="multipart/form-data" onSubmit={e => e.preventDefault()}>
                 <div>
                   <label htmlFor="first_name" className="block mb-2 font-semibold text-black">First Name</label>
-                  <input id="first_name" type="text" required value={formState.first_name} onChange={e => handleInputChange(e, 'first_name')} disabled={!editing} className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text" />
+                  <input
+                    id="first_name"
+                    type="text"
+                    required
+                    value={formState.first_name}
+                    onChange={e => handleInputChange(e, 'first_name')}
+                    disabled={!editing}
+                    className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text"
+                  />
                 </div>
                 <div>
                   <label htmlFor="last_name" className="block mb-2 font-semibold text-black">Last Name</label>
-                  <input id="last_name" type="text" required value={formState.last_name} onChange={e => handleInputChange(e, 'last_name')} disabled={!editing} className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text" />
+                  <input
+                    id="last_name"
+                    type="text"
+                    required
+                    value={formState.last_name}
+                    onChange={e => handleInputChange(e, 'last_name')}
+                    disabled={!editing}
+                    className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text"
+                  />
                 </div>
                 <div className="relative">
                   <label htmlFor="password" className="block mb-2 font-semibold text-black">Password</label>
-                  <input id="password" type={showPassword ? 'text' : 'password'} value={formState.password} onChange={e => handleInputChange(e, 'password')} placeholder="Enter new password" disabled={!editing} className="w-full rounded-lg border border-gray-300 p-3 pr-12 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text" />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-[45px] text-gray-500 hover:text-gray-800" aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={formState.password}
+                    onChange={e => handleInputChange(e, 'password')}
+                    placeholder="Enter new password"
+                    disabled={!editing}
+                    className="w-full rounded-lg border border-gray-300 p-3 pr-12 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-[45px] text-gray-500 hover:text-gray-800"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
                     {showPassword
                       ? <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                       : <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-3.582-10-8s4.477-8 10-8c1.27 0 2.485.3 3.613.825m2.512 2.097a9.995 9.995 0 012.503 5.078M3 3l18 18" /></svg>}
@@ -216,34 +253,76 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <label htmlFor="phone_number" className="block mb-2 font-semibold text-black">Phone number</label>
-                  <input id="phone_number" type="text" value={formState.phone_number} onChange={e => handleInputChange(e, 'phone_number')} disabled={!editing} className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text" />
+                  <input
+                    id="phone_number"
+                    type="text"
+                    value={formState.phone_number}
+                    onChange={e => handleInputChange(e, 'phone_number')}
+                    disabled={!editing}
+                    className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text"
+                  />
                 </div>
                 <div>
                   <label htmlFor="email" className="block mb-2 font-semibold text-black">Email</label>
-                  <input id="email" type="email" required value={formState.email} onChange={e => handleInputChange(e, 'email')} disabled={!editing} className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text" />
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    value={formState.email}
+                    onChange={e => handleInputChange(e, 'email')}
+                    disabled={!editing}
+                    className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-[#7B1824] cursor-pointer focus:cursor-text"
+                  />
                 </div>
                 <div>
                   <label htmlFor="role" className="block mb-2 font-semibold text-black">Role</label>
-                  <input id="role" type="text" value={user?.role || ''} disabled className="w-full rounded-lg border border-gray-300 p-3 bg-gray-100 cursor-not-allowed" />
+                  <input
+                    id="role"
+                    type="text"
+                    value={user?.role || ''}
+                    disabled
+                    className="w-full rounded-lg border border-gray-300 p-3 bg-gray-100 cursor-not-allowed"
+                  />
                 </div>
                 <div className="col-span-2 flex justify-center space-x-6 mt-10">
                   {!editing ? (
-                    <button type="button" onClick={() => setEditing(true)} className="bg-[#A97B5A] text-white rounded-full px-8 py-3 font-semibold text-lg hover:bg-[#8B6239] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A97B5A]" style={{ boxShadow: 'none' }}>
+                    <button
+                      type="button"
+                      onClick={() => setEditing(true)}
+                      className="bg-[#A97B5A] text-white rounded-full px-8 py-3 font-semibold text-lg hover:bg-[#8B6239] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A97B5A]"
+                      style={{ boxShadow: 'none' }}
+                    >
                       Update
                     </button>
                   ) : (
                     <>
-                      <button type="button" onClick={handleSave} className="bg-[#A97B5A] text-white rounded-full px-8 py-3 font-semibold text-lg hover:bg-[#8B6239] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A97B5A]" style={{ boxShadow: 'none' }}>
+                      <button
+                        type="button"
+                        onClick={handleSave}
+                        className="bg-[#A97B5A] text-white rounded-full px-8 py-3 font-semibold text-lg hover:bg-[#8B6239] transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A97B5A]"
+                        style={{ boxShadow: 'none' }}
+                      >
                         Save
                       </button>
-                      <button type="button" onClick={handleCancel} className="bg-gray-300 text-gray-700 rounded-full px-8 py-3 font-semibold text-lg hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400" style={{ boxShadow: 'none' }}>
+                      <button
+                        type="button"
+                        onClick={handleCancel}
+                        className="bg-gray-300 text-gray-700 rounded-full px-8 py-3 font-semibold text-lg hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+                        style={{ boxShadow: 'none' }}
+                      >
                         Cancel
                       </button>
                     </>
                   )}
                 </div>
               </form>
-              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
             </>
           )}
         </main>

@@ -32,23 +32,42 @@ export async function fetchUpdateUsers(
     email: string;
     phone_number: string;
     password?: string;
+    imageFile?: File; 
   }
 ) {
   const token = getAuthToken();
+
   try {
+    let body: BodyInit;
+    const headers: HeadersInit = {
+      ...(token ? { Authorization: `Token ${token}` } : {}),
+    };
+
+    if (data.imageFile) {
+      const formData = new FormData();
+      formData.append('first_name', data.first_name);
+      formData.append('last_name', data.last_name);
+      formData.append('email', data.email);
+      formData.append('phone_number', data.phone_number);
+      if (data.password) formData.append('password', data.password);
+      formData.append('image', data.imageFile);
+
+      body = formData;
+    } else {
+      body = JSON.stringify(data);
+      headers['Content-Type'] = 'application/json';
+    }
+
     const response = await fetch(`${baseUrl}/${id}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Token ${token}` } : {}),
-      },
-      body: JSON.stringify(data),
+      headers,
       credentials: 'include',
+      body,
     });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Failed to update user profile');
+      throw new Error(errorData.message || 'Profile updated successfully');
     }
 
     return await response.json();
@@ -57,4 +76,3 @@ export async function fetchUpdateUsers(
     throw new Error(error.message);
   }
 }
-

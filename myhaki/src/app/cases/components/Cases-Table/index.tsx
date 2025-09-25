@@ -33,7 +33,7 @@ export default function CaseTable() {
   const [selectedCase, setSelectedCase] = useState<CaseItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const itemsPerPage = 4;
+  const itemsPerPage = 5;
 
   if (loading || lawyersLoading) return <div className="flex justify-center py-12 text-gray-600">Loading cases...</div>;
   if (error) return <div className="text-[#b8906e] text-center py-12">Error: {error}</div>;
