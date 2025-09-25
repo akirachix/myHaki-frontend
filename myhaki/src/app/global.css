@@ -53,3 +53,11 @@ select:focus::-moz-focus-inner {
 select::-ms-focusring {
   outline: none;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
