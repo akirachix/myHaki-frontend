@@ -64,7 +64,7 @@ export async function fetchUpdateUsers(
       body,
     });
 
-    if (!response.ok) {
+    if (response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || 'Profile updated successfully');
     }

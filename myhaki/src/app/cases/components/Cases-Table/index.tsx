@@ -28,7 +28,7 @@ export default function CaseTable() {
   const [selectedCase, setSelectedCase] = useState<CaseItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const itemsPerPage = 5;
+  const itemsPerPage = 4;
   if (loading || lawyersLoading) return <div className="flex justify-center py-12 text-gray-600">Loading cases...</div>;
   if (error) return <div className="text-[#B8906E] text-center py-12">Error: {error}</div>;
   const sortedCases = [...cases].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
