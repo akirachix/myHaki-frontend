@@ -21,10 +21,10 @@ function Legend({ pieItems }: { pieItems: PieItem[] }) {
       {pieItems.map((pieItem) => (
         <li key={pieItem.value} className="flex items-center gap-1">
           <span
-            className="inline-block w-3 xl:ml-[-65px] h-3 rounded-full"
+            className="inline-block w-3 xl:ml-[-15px] h-3 rounded-full"
             style={{ backgroundColor: pieItem.color }}
           />
-          <span className="text-sm xl:text-xl text-[#621616] ">{pieItem.value}</span>
+          <span className="text-sm xl:text-xl text-[#621616]  ">{pieItem.value}</span>
         </li>
       ))}
     </ul>

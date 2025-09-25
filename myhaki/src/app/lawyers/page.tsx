@@ -120,7 +120,7 @@ export default function LawyersPage() {
 
   return (
     <div className="flex bg-gray-50 min-h-screen">
-      <div className="shrink-0">
+      <div className="w-60 shrink-0">
         <Sidebar />
       </div>
 
