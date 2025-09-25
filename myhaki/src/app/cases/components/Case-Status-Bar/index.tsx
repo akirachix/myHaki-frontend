@@ -16,10 +16,10 @@ export default function CaseStatusBar() {
         <CaseTable />
       </main>
 
-      <aside className="w-full overflow-x-hidden lg:w-1/4 px-4 py-40 flex flex-row lg:flex-col gap-6 lg:gap-10 
+      <aside className="w-full lg:w-1/4 px-4 py-40 flex flex-row lg:flex-col gap-6 lg:gap-10 
                         lg:sticky lg:top-0 [@media(width:1024px)]:ml-[-2%] [@media(width:1024px)]:mt-[-4%] ">
         
-        <div className="bg-[#b8906e] [@media(width:1024px)]:w-33 [@media(width:1366px)]:w-56 [@media(width:1366px)]:h-79 h-20 text-white rounded-lg mb-10 mt-[-20%] px-8 py-4 flex-1 flex flex-col items-center text-center [@media(width:1366px)]:mt-[-30%] [@media(width:1280px)]:h-79 [@media(width:1280px)]:mt-[-33%] [@media(width:1024px)]:ml-[-20%] [@media(width:1024px)]:h-[75%]">
+        <div className="bg-[#b8906e] [@media(width:1024px)]:w-33 [@media(width:1366px)]:w-56 [@media(width:1366px)]:h-79 text-white rounded-lg mb-10 mt-[-20%] px-8 py-4 flex-1 flex flex-col items-center text-center [@media(width:1512px)]:mt-[-27%] [@media(width:1366px)]:mt-[-30%] [@media(width:1280px)]:h-79 [@media(width:1280px)]:mt-[-33%] [@media(width:1024px)]:ml-[-20%] [@media(width:1024px)]:h-[75%]">
           {loading ? (
             <span className="mt-8 text-5xl [@media(width:1024px)]:text-[120%] font-bold">...</span>
           ) : (

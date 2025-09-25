@@ -21,7 +21,7 @@ describe('fetchSignin', () => {
 
     const result = await fetchSignin('test@example.com', 'password123');
     expect(result).toEqual(mockResponse);
-    expect(global.fetch).toHaveBeenCalledWith('/api/login', expect.objectContaining({
+    expect(global.fetch).toHaveBeenCalledWith('/api/signin', expect.objectContaining({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'test@example.com', password: 'password123' }),

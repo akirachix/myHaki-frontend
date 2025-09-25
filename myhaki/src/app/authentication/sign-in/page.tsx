@@ -4,18 +4,21 @@ import { useState } from 'react';
 import useFetchSignin from '@/app/hooks/useFetchSignIn';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Eye, EyeOff } from 'lucide-react';
+
 
 export default function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signin, loading, error } = useFetchSignin();
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
       await signin(email, password);
-      router.push('/profile');
+      router.push('/dashboard');
     } catch {
     }
   }
@@ -51,19 +54,31 @@ export default function Signin() {
             className="border rounded w-full py-2 px-3 mb-6 focus:outline-none"
           />
 
+
           <label htmlFor="password" className="block mb-2 text-gray-700 font-medium">
             Password
           </label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-            className="border rounded w-full py-2 px-3 mb-6 focus:outline-none"
-          />
+          <div className="relative mb-6">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              placeholder="Your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className="border rounded w-full py-2 px-3 pr-10 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+
 
           <div className="flex justify-end mb-6">
             <a
