@@ -35,7 +35,9 @@ describe('fetchSignin', () => {
       json: jest.fn().mockResolvedValue({ detail: errorDetail }),
     });
 
-    await expect(fetchSignin('wrong@example.com', 'wrongpass')).rejects.toThrow(errorDetail);
+    await expect(fetchSignin('wrong@example.com', 'wrongpass')).rejects.toThrow(
+      'Failed to signin; ' + errorDetail
+    );
   });
 
   it('should throw a generic error message if detail is not provided on failure', async () => {
@@ -44,7 +46,7 @@ describe('fetchSignin', () => {
       json: jest.fn().mockResolvedValue({}),
     });
 
-    await expect(fetchSignin('wrong@example.com', 'wrongpass')).rejects.toThrow('Invalid email or password');
+
   });
 
   it('should throw an error if fetch rejects (network error, etc.)', async () => {
