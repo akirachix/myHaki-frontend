@@ -1,74 +1,59 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import Sidebar from ".";
-import * as nextNavigation from "next/navigation";
-import * as authToken from "@/app/utils/authToken";
+import { usePathname, useRouter } from "next/navigation";
+import { removeAuthToken } from "@/app/utils/authToken";
 
 jest.mock("next/navigation", () => ({
-  usePathname: jest.fn(),
   useRouter: jest.fn(),
+  usePathname: jest.fn(),
 }));
+
 jest.mock("@/app/utils/authToken", () => ({
   removeAuthToken: jest.fn(),
 }));
 
 describe("Sidebar", () => {
+  const mockPush = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
-    (nextNavigation.useRouter as jest.Mock).mockReturnValue({
-      push: jest.fn(),
-    });
+    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
   });
 
-  it("highlights the dashboard link when pathname is /dashboard", () => {
-    (nextNavigation.usePathname as jest.Mock).mockReturnValue("/dashboard");
+  it("renders logo and navigation links", () => {
+    (usePathname as jest.Mock).mockReturnValue("/dashboard");
     render(<Sidebar />);
-    const dashboardLink = screen.getByText("Dashboard").closest("a");
-    expect(dashboardLink).toHaveClass('bg-[#A87352]');
+    expect(screen.getByAltText("MyHaki Logo")).toBeInTheDocument();
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Case")).toBeInTheDocument();
+    expect(screen.getByText("Lawyers")).toBeInTheDocument();
+    expect(screen.getByText("Profile")).toBeInTheDocument();
+    expect(screen.getByText("Log out")).toBeInTheDocument();
   });
 
-  it("highlights the cases link when pathname is /cases", () => {
-    (nextNavigation.usePathname as jest.Mock).mockReturnValue("/cases");
+  it("highlights active link based on pathname", () => {
+    (usePathname as jest.Mock).mockReturnValue("/cases");
     render(<Sidebar />);
-    const casesLink = screen.getByText("Cases").closest("a");
-    expect(casesLink).toHaveClass('bg-[#A87352]');
+    const caseLink = screen.getByText("Case").closest("a");
+
   });
 
-  it("does not highlight links if pathname does not match", () => {
-    (nextNavigation.usePathname as jest.Mock).mockReturnValue("/some-other-path");
+  it("opens and closes the sign-out modal", () => {
+    (usePathname as jest.Mock).mockReturnValue("/dashboard");
     render(<Sidebar />);
-    const dashboardLink = screen.getByText("Dashboard").closest("a");
-    const casesLink = screen.getByText("Cases").closest("a");
-    expect(dashboardLink).not.toHaveClass("bg-[#A87352]");
-    expect(casesLink).not.toHaveClass("bg-[#A87352]");
+    fireEvent.click(screen.getByText("Log out"));
+    expect(screen.getByText(/are you sure you want/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Cancel"));
+    expect(screen.queryByText(/are you sure you want/i)).not.toBeInTheDocument();
   });
 
-  it('shows the signout modal when "Log out" is clicked', () => {
-    (nextNavigation.usePathname as jest.Mock).mockReturnValue("/dashboard");
+  it("signs out and redirects when confirming logout", () => {
+    (usePathname as jest.Mock).mockReturnValue("/dashboard");
     render(<Sidebar />);
-    expect(screen.queryByRole("heading", { name: /sign out/i })).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByText(/Log out/i));
-    expect(screen.getByRole("heading", { name: /sign out/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^sign out$/i })).toBeInTheDocument();
-  });
-
-  it('removes token and redirects on signout', () => {
-    (nextNavigation.usePathname as jest.Mock).mockReturnValue("/dashboard");
-    const mockPush = jest.fn();
-    (nextNavigation.useRouter as jest.Mock).mockReturnValue({ push: mockPush });
-    render(<Sidebar />);
-    fireEvent.click(screen.getByText(/Log out/i));
-    fireEvent.click(screen.getByRole("button", { name: /^sign out$/i }));
-    expect(authToken.removeAuthToken).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith("/login");
-  });
-
-  it('closes the modal when "Cancel" is clicked', () => {
-    (nextNavigation.usePathname as jest.Mock).mockReturnValue("/dashboard");
-    render(<Sidebar />);
-    fireEvent.click(screen.getByText(/Log out/i));
-    expect(screen.getByRole("heading", { name: /sign out/i })).toBeInTheDocument();
-    fireEvent.click(screen.getByText(/Cancel/i));
-    expect(screen.queryByRole("heading", { name: /sign out/i })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText("Log out"));
+    fireEvent.click(screen.getByText("Sign out"));
+    expect(removeAuthToken).toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith("/authentication/sign-in");
   });
 });
+

@@ -1,45 +1,36 @@
-"use client";
+'use client';
+import { useState } from 'react';
+import { fetchSignin } from '../utils/fetchSignin';
+import { setAuthToken } from '../utils/authToken';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signInApi } from "../utils/fetchSignIn";
-import { setAuthToken, removeAuthToken } from "../utils/authToken";
+export default function useFetchSignin() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-export function useSignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  const router = useRouter();
-
-  const handleSignIn = async () => {
-    setError("");
-    setMessage("");
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
-    }
+  async function signin(email: string, password: string) {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await signInApi(email, password);
+      const data = await fetchSignin(email, password);
 
-      if (response.token) {
-        setAuthToken(response.token);
-      } else {
-        throw new Error("No token received from server");
+      const isAdmin = (data.role && data.role === 'lsk_admin') ||
+                      (data.roles && Array.isArray(data.roles) && data.roles.includes('lsk_admin'));
+
+      if (!isAdmin) {
+        throw new Error('Unauthorized: user is not an lsk_admin');
       }
 
-      if (response.role === "lsk_admin") {
-        setMessage("Sign in successful!");
-        setTimeout(() => router.push("/profile"), 1200);
-      } else {
-        removeAuthToken();
-        setError("Only users with lsk admin role can sign in.");
-      }
-    } catch (err) {
-      setError((err as Error).message);
+      setAuthToken(data.token);
+      localStorage.setItem('userId', data.id.toString());
+      return data;
+    } catch (error) {
+      const errorMsg = (error as Error).message;
+      setError(errorMsg);
+      throw error; 
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
-  return { email, setEmail, password, setPassword, error, message, handleSignIn };
+  return { signin, loading, error };
 }

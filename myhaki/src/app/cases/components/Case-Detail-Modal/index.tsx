@@ -1,18 +1,10 @@
 'use client';
-
 import { useEffect } from 'react';
 import { CaseItem } from '@/app/utils/type';
-
-interface Dependents {
-  count: number;
-  description: string;
-}
-
 interface CaseDetailModalProps {
   caseItem: CaseItem;
   onClose: () => void;
 }
-
 export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalProps) {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
@@ -23,17 +15,24 @@ export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalPr
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, [onClose]);
-
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return 'N/A';
     const date = new Date(dateStr);
     return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString();
   };
-
+  const safeCapitalize = (str?: string) => {
+    if (!str) return 'N/A';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  const safeReplaceAndCapitalize = (str?: string) => {
+    if (!str) return 'N/A';
+    const replaced = str.replace('_', ' ');
+    return replaced.charAt(0).toUpperCase() + replaced.slice(1);
+  };
   return (
-    <div className="fixed inset-0 bg-black/45 bg-opacity-10 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/45 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold text-[#822727] mb-6">Case Details - Case ID: {caseItem.case_id}</h2>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-3">Detainee Information</h3>
@@ -46,7 +45,7 @@ export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalPr
             </p>
             <p className="text-sm text-gray-600">
               <span className="font-medium">Gender:</span>{' '}
-              {caseItem.detainee_details.gender.charAt(0).toUpperCase() + caseItem.detainee_details.gender.slice(1)}
+              {safeCapitalize(caseItem.detainee_details.gender)}
             </p>
             <p className="text-sm text-gray-600">
               <span className="font-medium">Date of Birth:</span>{' '}
@@ -54,50 +53,47 @@ export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalPr
             </p>
             <p className="text-sm text-gray-600">
               <span className="font-medium">Relation to Applicant:</span>{' '}
-              {caseItem.detainee_details.relation_to_applicant.charAt(0).toUpperCase() +
-                caseItem.detainee_details.relation_to_applicant.slice(1) || 'N/A'}
+              {safeCapitalize(caseItem.detainee_details.relation_to_applicant)}
             </p>
           </div>
-
           <div>
-            <h3 className="text-lg  font-semibold text-gray-800 mb-3">Case Information</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">Case Information</h3>
             <p className="text-sm mb-1.5 text-gray-600">
               <span className="font-medium">Case Type:</span>{' '}
-              {caseItem.predicted_case_type.charAt(0).toUpperCase() + caseItem.predicted_case_type.slice(1) || 'N/A'}
+              {safeCapitalize(caseItem.predicted_case_type)}
             </p>
             <p className="text-sm mb-1.5 text-gray-600">
               <span className="font-medium">Urgency Level:</span>{' '}
-              <span className={
-                caseItem.predicted_urgency_level?.toLowerCase() === 'high' ? 'text-red-500 font-semibold' :
+              <span
+                className={
+                  caseItem.predicted_urgency_level?.toLowerCase() === 'high' ? 'text-red-500 font-semibold' :
                   caseItem.predicted_urgency_level?.toLowerCase() === 'medium' ? 'text-blue-500 font-semibold' :
-                    caseItem.predicted_urgency_level?.toLowerCase() === 'low' ? 'text-green-700 font-semibold' :
-                      ''
-              }>
+                  caseItem.predicted_urgency_level?.toLowerCase() === 'low' ? 'text-green-700 font-semibold' :
+                  ''
+                }
+              >
                 {caseItem.predicted_urgency_level
-                  ? caseItem.predicted_urgency_level.charAt(0).toUpperCase() + caseItem.predicted_urgency_level.slice(1)
+                  ? safeCapitalize(caseItem.predicted_urgency_level)
                   : 'N/A'}
               </span>
             </p>
             <p className="text-sm mb-1.5 text-gray-600">
               <span className="font-medium">Status:</span>{' '}
               <span
-                className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full capitalize ${caseItem.status.toLowerCase() === 'pending'
-                  ? 'bg-red-800 text-red-100'
-                  : caseItem.status.toLowerCase() === 'accepted'
-                    ? 'bg-[#f1c08b] text-gray-600'
-                    : caseItem.status.toLowerCase() === 'completed'
-                      ? 'bg-green-600 text-green-100'
-                      : caseItem.status.toLowerCase() === 'in_progress'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-gray-100 text-gray-800'
-                  }`}
+                className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full capitalize ${
+                  caseItem.status.toLowerCase() === 'pending' ? 'bg-red-800 text-red-100' :
+                  caseItem.status.toLowerCase() === 'accepted' ? 'bg-[#f1c08b] text-gray-600' :
+                  caseItem.status.toLowerCase() === 'completed' ? 'bg-green-600 text-green-100' :
+                  caseItem.status.toLowerCase() === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}
               >
                 {caseItem.status}
               </span>
             </p>
             <p className="text-sm mb-1.5 text-gray-600">
               <span className="font-medium">Stage:</span>{' '}
-              {caseItem.stage.replace('_', ' ').charAt(0).toUpperCase() + caseItem.stage.replace('_', ' ').slice(1) || 'N/A'}
+              {safeReplaceAndCapitalize(caseItem.stage)}
             </p>
             <p className="text-sm mb-1.5 text-gray-600">
               <span className="font-medium">Date of Offense:</span>{' '}
@@ -109,33 +105,29 @@ export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalPr
             </p>
           </div>
         </div>
-
         <div className="mt-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-3">Case Description</h3>
           <p className="text-sm text-gray-600">
             {caseItem.case_description
-              ? caseItem.case_description.charAt(0).toUpperCase() + caseItem.case_description.slice(1)
+              ? safeCapitalize(caseItem.case_description)
               : 'No description provided.'}
           </p>
         </div>
-
         <div className="mt-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-3">Location Information</h3>
           <p className="text-sm text-gray-600">
             <span className="font-medium">Police Station:</span> {caseItem.police_station || 'N/A'}
           </p>
         </div>
-
         <div className="mt-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-3">Financial Information</h3>
           <p className="text-sm text-gray-600">
             <span className="font-medium">Income Source:</span>{' '}
-            {caseItem.income_source.charAt(0).toUpperCase() + caseItem.income_source.slice(1) || 'N/A'}
+            {safeCapitalize(caseItem.income_source)}
           </p>
           <p className="text-sm text-gray-600">
             <span className="font-medium">Monthly Income:</span>{' '}
-            {caseItem.monthly_income.replace('_', ' ').charAt(0).toUpperCase() +
-              caseItem.monthly_income.replace('_', ' ').slice(1) || 'N/A'}
+            {safeReplaceAndCapitalize(caseItem.monthly_income)}
           </p>
           <p className="text-sm text-gray-600">
             <span className="font-medium">Dependents:</span>{' '}
@@ -144,12 +136,10 @@ export default function CaseDetailModal({ caseItem, onClose }: CaseDetailModalPr
               : 'N/A'}
           </p>
         </div>
-        Property 'toString' does not exist on type 'never'.ts(2339)
-
         <div className="mt-8 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-[#b8906e] text-white rounded-md hover:bg-[#a58265] transition-colors shadow-sm cursor-pointer"
+            className="px-4 py-2 bg-[#B8906E] text-white rounded-md hover:bg-[#A58265] transition-colors shadow-sm cursor-pointer"
           >
             Close
           </button>

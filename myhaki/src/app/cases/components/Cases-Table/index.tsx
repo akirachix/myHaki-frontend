@@ -1,22 +1,19 @@
 'use client';
-
 import { useState, useEffect } from "react";
 import useFetchCases from "@/app/hooks/useFetchCases";
 import { CaseItem } from "@/app/utils/type";
-import useFetchLawyers from "@/app/hooks/useFetchLawyers"; 
+import useFetchLawyers from "@/app/hooks/useFetchLawyers";
 import CaseDetailModal from "../Case-Detail-Modal";
-
 function normalizeStatus(status: string): string {
   return status.toLowerCase().replace(/[\s-]+/g, '');
 }
-
 function getStatusClasses(status: string): string {
   const coloredStatus = normalizeStatus(status || '');
   switch (coloredStatus) {
     case 'pending':
       return 'bg-red-800 text-red-100';
     case 'accepted':
-      return 'bg-[#f1c08b] text-gray-600';
+      return 'bg-[#F1C08B] text-gray-600';
     case 'completed':
       return 'bg-green-700 text-green-100';
     case 'inprogress':
@@ -25,19 +22,15 @@ function getStatusClasses(status: string): string {
       return 'bg-gray-100 text-gray-800';
   }
 }
-
 export default function CaseTable() {
   const { cases, loading, error } = useFetchCases();
-  const { lawyers, loading: lawyersLoading } = useFetchLawyers(); 
-
+  const { lawyers, loading: lawyersLoading } = useFetchLawyers();
   const [selectedCase, setSelectedCase] = useState<CaseItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const itemsPerPage = 5;
-
+  const itemsPerPage = 4;
   if (loading || lawyersLoading) return <div className="flex justify-center py-12 text-gray-600">Loading cases...</div>;
-  if (error) return <div className="text-[#b8906e] text-center py-12">Error: {error}</div>;
-
+  if (error) return <div className="text-[#B8906E] text-center py-12">Error: {error}</div>;
   const sortedCases = [...cases].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   const filteredCases = searchTerm.trim()
     ? sortedCases.filter((caseItem) =>
@@ -46,26 +39,22 @@ export default function CaseTable() {
           .includes(searchTerm.toLowerCase())
       )
     : sortedCases;
-
   const totalPages = Math.ceil(filteredCases.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentCases = filteredCases.slice(startIndex, startIndex + itemsPerPage);
-
   const handlePrev = () => setCurrentPage(prev => Math.max(prev - 1, 1));
   const handleNext = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
   const handleClear = () => {
     setSearchTerm('');
     setCurrentPage(1);
   };
-
   const getLawyerName = (lawyerId: number | null | undefined): string => {
     if (!lawyerId) return 'Unassigned';
     const lawyer = lawyers.find(l => l.id === lawyerId);
     return lawyer ? lawyer.first_name : 'Unassigned';
   };
-
   return (
-    <div className="bg-white rounded-2xl [@media(width:1024px)]:ml-[-10%] shadow-xl p-6 overflow-hidden">
+    <div className="bg-white rounded-2xl [@media(width:1024px)]:ml-[-10%] mb-3 shadow-xl p-6 overflow-hidden -mt-7">
       <div className="mb-1">
         <div className="mt-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
           <input
@@ -73,7 +62,7 @@ export default function CaseTable() {
             placeholder="Search by case type..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#b8906e] w-full sm:w-84"
+            className="px-4 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B8906E] w-full sm:w-84"
           />
           {searchTerm && (
             <button
@@ -85,10 +74,9 @@ export default function CaseTable() {
           )}
         </div>
       </div>
-
       <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gradient-to-r from-[#f1c08b] to-[#e8b07a]">
+          <thead className="bg-gradient-to-r from-[#F1C08B] to-[#E8B07A]">
             <tr className="font-bold">
               <th className="px-6 py-4 text-left text-xs font-semibold text-[#822727] uppercase tracking-wider rounded-tl-xl">
                 Lawyer
@@ -109,11 +97,11 @@ export default function CaseTable() {
               currentCases.map((caseItem: CaseItem) => (
                 <tr
                   key={caseItem.case_id}
-                  className="group hover:bg-gradient-to-r from-gray-50 to-gray-25 transition-all duration-200 cursor-pointer border-b border-transparent hover:border-b border-gray-200"
+                  className="group hover:bg-gradient-to-r from-gray-50 to-gray-25 transition-all duration-200 cursor-pointer border-b hover:border-b border-gray-200"
                   onClick={() => setSelectedCase(caseItem)}
                 >
                   <td className="px-6 py-5 whitespace-nowrap text-sm font-medium text-gray-800">
-                    {getLawyerName(caseItem.lawyer_id)} 
+                    {getLawyerName(caseItem.lawyer_id)}
                   </td>
                   <td className="px-6 py-5 whitespace-nowrap text-sm text-gray-700">
                     {caseItem.detainee_details?.first_name || 'Unknown'} {caseItem.detainee_details?.last_name || ''}
@@ -138,7 +126,6 @@ export default function CaseTable() {
           </tbody>
         </table>
       </div>
-
       {totalPages > 1 && (
         <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
           <button
@@ -147,30 +134,27 @@ export default function CaseTable() {
             className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-colors ${
               currentPage === 1
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-[#b8906e] text-white hover:bg-[#a58265] shadow-md hover:shadow-lg'
+                : 'bg-[#B8906E] text-white hover:bg-[#A58265] shadow-md hover:shadow-lg'
             }`}
           >
             ← Previous
           </button>
-
           <div className="text-sm text-gray-600">
             Page {currentPage} of {totalPages}
           </div>
-
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
             className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-colors ${
               currentPage === totalPages
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-[#b8906e] text-white hover:bg-[#a58265] shadow-md hover:shadow-lg'
+                : 'bg-[#B8906E] text-white hover:bg-[#A58265] shadow-md hover:shadow-lg'
             }`}
           >
             Next →
           </button>
         </div>
       )}
-
       {selectedCase && (
         <CaseDetailModal
           caseItem={selectedCase}

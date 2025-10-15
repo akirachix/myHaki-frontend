@@ -63,7 +63,7 @@ export default function LawyersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterVerified, setFilterVerified] = useState<string>("all");
-  const itemsPerPage = 7;
+  const itemsPerPage = 6;
 
   const filteredLawyers = useMemo(() => {
     let result: Lawyer[] = Array.isArray(lawyers) ? lawyers : [];
@@ -120,14 +120,16 @@ export default function LawyersPage() {
 
   return (
     <div className="flex bg-gray-50 min-h-screen">
-      <div className="shrink-0">
+      <div className="w-64 shrink-0">
         <Sidebar />
       </div>
 
       <div className="flex-1 p-6 overflow-hidden">
-        <h1 className="mt-15 text-2xl md:text-3xl font-bold text-red-900 mb-6 md:mb-8 tracking-tight">Lawyers</h1>
+      <h1 className="mt-15 text-2xl md:text-3xl font-bold text-red-900 mb-3">
+  Lawyers
+</h1>
 
-        <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center mt-10">
           <div className="relative max-w-md w-full text-gray-800">
             <input
               type="text"
@@ -151,7 +153,7 @@ export default function LawyersPage() {
             )}
           </div>
 
-          <div className="w-full sm:w-48 text-gray-700">
+          <div className="w-full sm:w-48 text-gray-700 ">
             <TypedSelect
               options={filterOptions}
               value={filterOptions.find(opt => opt.value === filterVerified)}
@@ -170,7 +172,7 @@ export default function LawyersPage() {
           </div>
         ) : (
           <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto mt-3">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-[#b8906e]">
                   <tr>

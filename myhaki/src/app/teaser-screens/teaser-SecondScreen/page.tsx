@@ -22,7 +22,7 @@ export default function WelcomePageSecond() {
 
     return (
         <div className="flex min-h-screen" >
-            <div className="w-200 relative">
+            <div className="w-210 relative">
                 <div className="absolute inset-0 overflow-hidden">
                     <Image
                         src="/images/right-two.png"

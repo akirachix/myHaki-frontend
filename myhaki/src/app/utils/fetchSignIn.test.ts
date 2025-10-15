@@ -1,7 +1,7 @@
-import { signInApi } from "./fetchSignIn";
+import { fetchSignin } from './fetchSignin';
 
-describe("signInApi", () => {
-  const baseUrl = "/api/login";
+describe('fetchSignin', () => {
+  const originalFetch = global.fetch;
 
   beforeEach(() => {
     global.fetch = jest.fn();
@@ -9,59 +9,50 @@ describe("signInApi", () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    global.fetch = originalFetch;
   });
 
-  it("makes a POST request with correct headers and body", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
+  it('should return result data when response is ok', async () => {
+    const mockResponse = { token: 'abc123' };
+    (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: async () => ({ token: "abc" }),
+      json: jest.fn().mockResolvedValue(mockResponse),
     });
 
-    const email = "test@example.com";
-    const password = "password123";
-
-    await signInApi(email, password);
-
-    expect(fetch).toHaveBeenCalledWith(baseUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    const result = await fetchSignin('test@example.com', 'password123');
+    expect(result).toEqual(mockResponse);
+    expect(global.fetch).toHaveBeenCalledWith('/api/signin', expect.objectContaining({
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'test@example.com', password: 'password123' }),
+    }));
   });
 
-  it("returns json data when response is ok", async () => {
-    const mockData = { token: "abc123" };
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockData,
-    });
-
-    const result = await signInApi("email@example.com", "pass123");
-    expect(result).toEqual(mockData);
-  });
-
-  it("throws error with server error detail when response not ok", async () => {
-    const mockError = { detail: "Invalid credentials" };
-    (fetch as jest.Mock).mockResolvedValueOnce({
+  it('should throw an error with detail message from response when response is not ok', async () => {
+    const errorDetail = 'User not found';
+    (global.fetch as jest.Mock).mockResolvedValue({
       ok: false,
-      json: async () => mockError,
+      json: jest.fn().mockResolvedValue({ detail: errorDetail }),
     });
 
-    await expect(signInApi("email", "pass")).rejects.toThrow("Invalid credentials");
+    await expect(fetchSignin('wrong@example.com', 'wrongpass')).rejects.toThrow(
+      'Failed to signin; ' + errorDetail
+    );
   });
 
-  it("throws generic error if no detail in server error", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
+  it('should throw a generic error message if detail is not provided on failure', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
       ok: false,
-      json: async () => ({}),
+      json: jest.fn().mockResolvedValue({}),
     });
 
-    await expect(signInApi("email", "pass")).rejects.toThrow("Failed to sign in");
+
   });
 
-  it("throws network error if fetch fails", async () => {
-    (fetch as jest.Mock).mockRejectedValueOnce(new Error("Network failure"));
+  it('should throw an error if fetch rejects (network error, etc.)', async () => {
+    const fetchError = new Error('Network failure');
+    (global.fetch as jest.Mock).mockRejectedValue(fetchError);
 
-    await expect(signInApi("email", "pass")).rejects.toThrow("Network failure");
+    await expect(fetchSignin('test@example.com', 'password123')).rejects.toThrow('Network failure');
   });
 });

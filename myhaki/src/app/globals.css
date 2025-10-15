@@ -1,27 +1,3 @@
-@import "tailwindcss";
-
-:root {
-
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  /* color: var(--foreground); */
-  font-family: Arial, Helvetica, sans-serif;
-}
 
 @import "tailwindcss";
 
@@ -48,8 +24,6 @@ body {
   font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
   overflow-x: hidden;
 
-
-
 }
 
 .hide-scrollbar::-webkit-scrollbar {
@@ -69,4 +43,12 @@ select:focus::-moz-focus-inner {
 
 select::-ms-focusring {
   outline: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
