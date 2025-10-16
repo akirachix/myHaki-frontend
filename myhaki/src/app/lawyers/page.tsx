@@ -59,8 +59,8 @@ function StatsCards({
   completedCasesCount: number;
 }) {
   return (
-    <div className="flex flex-col gap-5 sticky top-4 lg:mt-30">
-      <div className="bg-[#B8906E] rounded-xl w-64 h-70 p-10 flex flex-col items-center justify-center text-white shadow-md">
+    <div className="flex flex-col gap-5 sticky top-4 lg:mt-30 [@media(width:1024px)]:mt-32 [@media(width:1280px)]:mt-32">
+      <div className="bg-[#B8906E] rounded-xl w-64 h-60 p-10 flex flex-col items-center justify-center text-white shadow-md [@media(width:1024px)]:w-40 [@media(width:1024px)]:-ml-6">
         <p className="text-lg font-semibold mb-1 text-center">Total Active Lawyers</p>
         <p className="text-4xl font-bold mb-2">{verifiedLawyersCount}</p>
         <div className="w-8 h-8">
@@ -72,7 +72,7 @@ function StatsCards({
           />
         </div>
       </div>
-      <div className="bg-[#B8906E] rounded-xl w-64 h-70 p-10 flex flex-col items-center justify-center text-white shadow-md">
+      <div className="bg-[#B8906E] rounded-xl w-64 h-70 p-10 flex flex-col items-center justify-center text-white shadow-md [@media(width:1024px)]:w-40 [@media(width:1024px)]:-ml-6">
         <p className="text-lg font-semibold mb-1 text-center">Total Completed Cases</p>
         <p className="text-4xl font-bold mb-2">{completedCasesCount}</p>
         <div className="w-8 h-8">
@@ -147,7 +147,7 @@ export default function LawyersPage() {
             List of Lawyers
           </h1>
 
-          <div className="flex flex-col sm:flex-row gap-4 mb-6 items-start sm:items-center">
+          <div className="flex flex-col sm:flex-row gap-4 mb-6  items-start sm:items-center">
             <div className="relative max-w-md w-full">
               <input
                 type="text"
@@ -171,7 +171,7 @@ export default function LawyersPage() {
               </svg>
             </div>
 
-            <div className="w-48">
+            <div className="w-48 ">
               <TypedSelect
                 options={filterOptions}
                 styles={customStyles}
@@ -183,7 +183,7 @@ export default function LawyersPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-md border border-[#E6D6C3] overflow-hidden">
+          <div className="bg-white rounded-xl shadow-md border border-[#E6D6C3] overflow-hidden [@media(width:1024px)]:w-135 ">
             {isLoading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
@@ -195,7 +195,7 @@ export default function LawyersPage() {
               </div>
             ) : (
               <>
-                <table className="min-w-full divide-y  shadow-2xl divide-[#E6D6C3] text-sm">
+                <table className="min-w-full divide-y shadow-2xl divide-[#E6D6C3] text-sm">
                   <thead className="bg-[#B8906E] text-white">
                     <tr>
                       <th className="px-6 py-3 text-left font-semibold">Lawyer</th>

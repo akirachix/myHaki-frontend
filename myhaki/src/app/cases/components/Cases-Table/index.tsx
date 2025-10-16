@@ -52,7 +52,6 @@ export default function CaseTable() {
 
   let filteredCases = sortedCases;
 
-  // Apply date range filters
   if (startDateFilter || endDateFilter) {
     filteredCases = filteredCases.filter(caseItem => {
       const caseDate = new Date(caseItem.created_at);
@@ -65,7 +64,6 @@ export default function CaseTable() {
     });
   }
 
-  // Search filter (includes assigned lawyer name, detainee, case type)
   if (searchTerm.trim()) {
     filteredCases = filteredCases.filter((caseItem) => {
       const lawyerName = caseItem.assigned_lawyer_details
@@ -109,8 +107,7 @@ export default function CaseTable() {
   };
 
   return (
-    <div className="bg-white rounded-2xl mb-3 shadow-xl p-6 overflow-hidden -mt-7">
-      {/* Search + Filters */}
+    <div className="bg-white rounded-2xl lg: -ml-9 mb-3 shadow-xl p-6 overflow-hidden -mt-7">
       <div className="mb-1">
         <div className="mt-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-1">
@@ -132,7 +129,7 @@ export default function CaseTable() {
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-[#B8906E] text-white rounded-md hover:bg-[#A58265] transition-colors text-sm flex items-center gap-2"
+            className="px-4 py-2 bg-[#B8906E] text-white rounded-md  hover:bg-[#A58265] transition-colors text-sm flex items-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -168,10 +165,9 @@ export default function CaseTable() {
         )}
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm">
+      <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm  ">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gradient-to-r from-[#F1C08B] to-[#E8B07A]">
+          <thead className="bg-gradient-to-r  from-[#F1C08B] to-[#E8B07A]">
             <tr className="font-bold">
               <th className="px-6 py-4 text-left text-xs font-semibold text-[#822727] uppercase tracking-wider rounded-tl-xl">Lawyer</th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-[#822727] uppercase tracking-wider">Detainee</th>
@@ -212,7 +208,6 @@ export default function CaseTable() {
         </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
           <button onClick={handlePrev} disabled={currentPage === 1} className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-colors ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#B8906E] text-white hover:bg-[#A58265] shadow-md hover:shadow-lg'}`}>

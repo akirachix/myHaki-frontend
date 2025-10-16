@@ -73,14 +73,7 @@ export interface LSKAdmin {
   role?: string;
 }
 
-export interface CPDRecord {
-  cpd_id: number;
-  lawyer: number;
-  points_earned: number;
-  total_points: number;
-  updated_at?: string;
-}
-
+  
 export interface Detainee {
   detainee_id: number;
   first_name: string;
