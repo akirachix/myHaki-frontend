@@ -29,8 +29,8 @@ type Lawyer = {
 const mockLawyers: Lawyer[] = [
   {
     id: 1,
-    first_name: "John",
-    last_name: "Doe",
+    first_name: "lwam",
+    last_name: "bisrat",
     verified: true,
     work_place: "Doe & Co.",
     cpd_points_2025: 10,
@@ -89,22 +89,23 @@ describe('LawyersPage', () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: mockLawyers, loading: false });
     render(<LawyersPage />);
     await waitFor(() => {
-      expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
+      expect(screen.getByText(/lwam bisrat/i)).toBeInTheDocument();
       expect(screen.getByText(/Jane Smith/i)).toBeInTheDocument();
       expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument();
     });
-    expect(screen.getByText(/10 pts/i)).toBeInTheDocument();
-    expect(screen.getByText(/5 pts/i)).toBeInTheDocument();
-    expect(screen.getByText(/Corporate law, Pro bono services, Regional & International law/i)).toBeInTheDocument();
-  });
+    expect(screen.getByText(/10/i)).toBeInTheDocument();
+    expect(screen.getByText(/5/i)).toBeInTheDocument();
+    expect(screen.getByText(/Criminal Lawyer/i)).toBeInTheDocument();
+    expect(screen.getByText(/Human Rights Lawyer/i)).toBeInTheDocument();
+    expect(screen.getByText(/General Practice/i)).toBeInTheDocument();  });
 
   it('filters lawyers by search query', async () => {
     (useFetchLawyers as jest.Mock).mockReturnValue({ lawyers: mockLawyers, loading: false });
     render(<LawyersPage />);
-    const searchInput = screen.getByPlaceholderText(/Search by name.../i);
-    fireEvent.change(searchInput, { target: { value: 'John' } });
+    const searchInput = screen.getByPlaceholderText(/Search lawyer.../i);
+    fireEvent.change(searchInput, { target: { value: 'lwam' } });
     await waitFor(() => {
-      expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
+      expect(screen.getByText(/lwam bisrat/i)).toBeInTheDocument();
       expect(screen.queryByText(/Jane Smith/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/Albert Bruce/i)).not.toBeInTheDocument();
     });
@@ -116,7 +117,7 @@ describe('LawyersPage', () => {
     const filterSelect = screen.getByRole('combobox');
     fireEvent.change(filterSelect, { target: { value: 'true' } });
     await waitFor(() => {
-      expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
+      expect(screen.getByText(/lwam bisrat/i)).toBeInTheDocument();
       expect(screen.getByText(/Albert Bruce/i)).toBeInTheDocument();
     });
     fireEvent.change(filterSelect, { target: { value: 'false' } });
