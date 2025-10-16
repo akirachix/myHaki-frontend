@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 
-
 const months = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
@@ -10,37 +9,41 @@ const months = [
 
 interface CalendarPopupProps {
   value: Date;
-  onChange: (date: Date) => void;
+  filterType: "month" | "year";
+  onChange: (date: Date, filterType?: "month" | "year") => void;
 }
 
-const CalendarPopup = ({ value, onChange }: CalendarPopupProps) => {
+const CalendarPopup = ({ value, filterType, onChange }: CalendarPopupProps) => {
   const [show, setShow] = useState(false);
   const [selectedYear, setSelectedYear] = useState(value.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(value.getMonth());
 
-  const handleToggle = () => {
-    setShow(prev => !prev);
-  };
+  const handleToggle = () => setShow(prev => !prev);
 
   const handleMonthSelect = (monthIndex: number) => {
     setSelectedMonth(monthIndex);
-    const newDate = new Date(selectedYear, monthIndex, 1);
-    onChange(newDate);
-    setShow(false); 
+    onChange(new Date(selectedYear, monthIndex, 1), "month");
+    setShow(false);
   };
 
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newYear = parseInt(e.target.value, 10);
     setSelectedYear(newYear);
-    const newDate = new Date(newYear, selectedMonth, 1);
-    onChange(newDate);
+    if (filterType === "year") {
+      onChange(new Date(newYear, 0, 1), "year");
+    } else {
+      onChange(new Date(newYear, selectedMonth, 1), "month");
+    }
+  };
+
+  const handleAllYear = () => {
+    onChange(new Date(selectedYear, 0, 1), "year");
+    setShow(false);
   };
 
   const currentYear = new Date().getFullYear();
   const years = [];
-  for (let i = 0; i < 10; i++) {
-    years.push(currentYear + i);
-  }
+  for (let i = 0; i < 10; i++) years.push(currentYear + i);
 
   return (
     <div className="relative inline-block cursor-pointer">
@@ -52,7 +55,6 @@ const CalendarPopup = ({ value, onChange }: CalendarPopupProps) => {
       >
         <FaRegCalendarAlt size={22} />
       </button>
-
       {show && (
         <div className="absolute z-50 cursor-pointer bg-white border border-gray-200 rounded-lg shadow-xl p-4 w-60 top-full right-70 transform translate-x-full">
           <div className="flex items-center justify-between mb-3 cursor-pointer">
@@ -84,7 +86,7 @@ const CalendarPopup = ({ value, onChange }: CalendarPopupProps) => {
                 key={month}
                 onClick={() => handleMonthSelect(index)}
                 className={`py-2 px-1 cursor-pointer text-xs rounded font-medium transition-colors text-center
-                  ${selectedMonth === index
+                  ${filterType === "month" && value.getMonth() === index && value.getFullYear() === selectedYear
                     ? 'bg-[#621616] text-white'
                     : 'bg-gray-50 text-gray-700 hover:bg-gray-200'
                   }`}
@@ -95,8 +97,16 @@ const CalendarPopup = ({ value, onChange }: CalendarPopupProps) => {
             ))}
           </div>
 
+          <button
+            className={`w-full mt-4 py-2 rounded font-medium text-xs transition-colors 
+              ${filterType === "year" ? 'bg-[#621616] text-white' : 'bg-gray-50 text-gray-700 hover:bg-gray-200'}
+            `}
+            onClick={handleAllYear}
+          >
+            All Year
+          </button>
           <div className="mt-3 text-xs cursor-pointer text-gray-500 text-center">
-            Selected: {months[selectedMonth]} {selectedYear}
+            Selected: {filterType === "year" ? "All Year" : months[value.getMonth()]} {selectedYear}
           </div>
         </div>
       )}

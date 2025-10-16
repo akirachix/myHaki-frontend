@@ -42,7 +42,7 @@ describe("useResetPassword Hook", () => {
     });
 
     await waitFor(() =>
-      expect(pushMock).toHaveBeenCalledWith("/signin")
+      expect(pushMock).toHaveBeenCalledWith("/authentication/sign-in")
     );
   });
 });

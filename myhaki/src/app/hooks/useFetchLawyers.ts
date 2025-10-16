@@ -19,8 +19,8 @@ export function useFetchVerifiedLawyers() {
           ? data.filter((lawyer) => lawyer.verified === true)
           : [];
         setLawyers(verifiedLawyers);
-      } catch (err) {
-        setError((err as Error).message);
+      } catch (error) {
+        setError((error as Error).message);
       } finally {
         setLoading(false);
       }

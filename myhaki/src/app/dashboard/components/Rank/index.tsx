@@ -3,52 +3,46 @@ import React from 'react';
 import Image from 'next/image';
 import { FaCrown } from 'react-icons/fa';
 
-interface CPDRecord {
-  lawyer: number | null;
-  total_points: number;
-}
-
-interface Lawyer {
+export interface Lawyer {
   id: number;
   first_name: string;
   last_name: string;
+  email: string | null;
+  role: string;
+  phone_number: string | null;
+  image: string | null;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+  profile_id: string;
+  verified: boolean;
+  practising_status: string;
+  work_place: string;
+  physical_address: string;
+  cpd_points_2025: number;
+  criminal_law: boolean;
+  constitutional_law: boolean;
+  corporate_law: boolean;
+  family_law: boolean;
+  pro_bono_legal_services: boolean;
+  alternative_dispute_resolution: boolean;
+  regional_and_international_law: boolean;
+  mining_law: boolean;
 }
 
 interface RankProps {
-  cpdPoints: CPDRecord[];
   lawyers: Lawyer[];
 }
 
-const Rank = ({ cpdPoints, lawyers }: RankProps) => {
-  const lawyerPoints: Record<number, number> = {};
+const Rank = ({ lawyers }: RankProps) => {
+  const sortedLawyers = [...lawyers]
+    .sort((a, b) => b.cpd_points_2025 - a.cpd_points_2025)
+    .slice(0, 3);
 
-  cpdPoints.forEach((cpdRecord) => {
-    if (cpdRecord.lawyer == null) return;
-    const lawyerId = cpdRecord.lawyer + 1;
-    if (
-      lawyerPoints[lawyerId] === undefined ||
-      cpdRecord.total_points > lawyerPoints[lawyerId]
-    ) {
-      lawyerPoints[lawyerId] = cpdRecord.total_points;
-    }
-  });
-
-  const lawyerTotals = lawyers.map((lawyer) => {
-    const lawyerId = lawyer.id;
-    return {
-      id: lawyerId,
-      name: `${lawyer.first_name} ${lawyer.last_name}`,
-      total_cpd_points: lawyerPoints[lawyerId] ?? 0,
-    };
-  });
-
-  const sortedLawyers = lawyerTotals.sort(
-    (a, b) => b.total_cpd_points - a.total_cpd_points
-  );
   const topThree = [
-    sortedLawyers[0] || { name: 'N/A', total_cpd_points: 0 },
-    sortedLawyers[1] || { name: 'N/A', total_cpd_points: 0 },
-    sortedLawyers[2] || { name: 'N/A', total_cpd_points: 0 },
+    sortedLawyers[0] || { first_name: 'N/A', last_name: '', cpd_points_2025: 0 },
+    sortedLawyers[1] || { first_name: 'N/A', last_name: '', cpd_points_2025: 0 },
+    sortedLawyers[2] || { first_name: 'N/A', last_name: '', cpd_points_2025: 0 },
   ];
 
   const positions = [
@@ -90,32 +84,35 @@ const Rank = ({ cpdPoints, lawyers }: RankProps) => {
   return (
     <div className="bg-pink-100 p-4 rounded-lg w-full max-w-md mx-auto">
       <div className="flex flex-row items-end justify-center gap-x-4">
-        {positions.map((position) => (
-          <div
-            key={position.label}
-            className={`text-center flex-1 flex flex-col items-center ${position.mb}`}
-          >
-            <div className="relative flex justify-center">
-              <Image
-                src={position.img}
-                alt={position.label}
-                width={position.width}
-                height={position.height}
-                className="w-10 h-10 sm:w-12 sm:h-12"
-                style={{ width: 'auto', height: 'auto' }}
-              />
-              <FaCrown
-                className={`absolute -top-2 left-1/2 -translate-x-1/2 ${position.crownColor} ${position.crownSize}`}
-              />
+        {positions.map((position) => {
+          const lawyer = topThree[position.index];
+          return (
+            <div
+              key={position.label}
+              className={`text-center flex-1 flex flex-col items-center ${position.mb}`}
+            >
+              <div className="relative flex justify-center">
+                <Image
+                  src={position.img}
+                  alt={position.label}
+                  width={position.width}
+                  height={position.height}
+                  className="w-10 h-10 sm:w-12 sm:h-12"
+                  style={{ width: 'auto', height: 'auto' }}
+                />
+                <FaCrown
+                  className={`absolute -top-2 left-1/2 -translate-x-1/2 ${position.crownColor} ${position.crownSize}`}
+                />
+              </div>
+              <p className={`${position.textClass} mt-1 font-medium`}>
+                {lawyer.first_name} {lawyer.last_name}
+              </p>
+              <p className="text-[10px] text-gray-600">
+                {lawyer.cpd_points_2025 ?? 0} pts
+              </p>
             </div>
-            <p className={`${position.textClass} mt-1 font-medium`}>
-              {topThree[position.index]?.name || 'N/A'}
-            </p>
-            <p className="text-[10px] text-gray-600">
-              {topThree[position.index]?.total_cpd_points ?? 0} pts
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

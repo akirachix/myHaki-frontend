@@ -7,22 +7,35 @@ import Rank from "./components/Rank";
 import CalendarPopup from "./components/Calendar";
 import useFetchCases from "@/app/hooks/useFetchCases";
 import { useFetchVerifiedLawyers } from "../hooks/useFetchLawyers";
-import useFetchCPDPoints from "@/app/hooks/useFetchCPDPoints";
 import useFetchLSKAdmin from "../hooks/useFetchLSKAdmin";
 import Layout from "../shared-components/Layout";
+
 const filterByMonth = (list: any[], date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const prefix = `${year}-${month}`;
   return list.filter(item => item.updated_at && item.updated_at.startsWith(prefix));
 };
+
+const filterByYear = (list: any[], date: Date) => {
+  const year = date.getFullYear();
+  const prefix = `${year}-`;
+  return list.filter(item => item.updated_at && item.updated_at.startsWith(prefix));
+};
+
 export default function DashboardPage() {
   const [filterDate, setFilterDate] = useState<Date>(new Date());
+  const [filterType, setFilterType] = useState<"month" | "year">("month");
   const { cases, loading: casesLoading } = useFetchCases();
   const { lawyers, loading: lawyersLoading } = useFetchVerifiedLawyers();
-  const { cpdRecords, loading: cpdLoading } = useFetchCPDPoints();
   const { admins, loading: adminsLoading } = useFetchLSKAdmin();
-  const isLoading = casesLoading || lawyersLoading || cpdLoading || adminsLoading;
+  const isLoading = casesLoading || lawyersLoading || adminsLoading;
+
+  const handleCalendarChange = (date: Date, type?: "month" | "year") => {
+    setFilterDate(date);
+    setFilterType(type || "month");
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -37,13 +50,16 @@ export default function DashboardPage() {
       </Layout>
     );
   }
-  const verifiedLawyers = lawyers.filter(lawyer => {
-    if (typeof lawyer.verified === "boolean") return lawyer.verified;
-    return false;
-  });
-  const filteredCases = filterByMonth(cases || [], filterDate);
-  const filteredLawyers = filterByMonth(verifiedLawyers, filterDate);
-  const filteredCPDPoints = filterByMonth(cpdRecords || [], filterDate);
+
+  const verifiedLawyers = lawyers.filter(lawyer => lawyer.verified === true);
+
+  let filteredCases = [];
+  if (filterType === "year") {
+    filteredCases = filterByYear(cases || [], filterDate);
+  } else {
+    filteredCases = filterByMonth(cases || [], filterDate);
+  }
+
   let adminUser = null;
   if (typeof window !== "undefined") {
     const userId = localStorage.getItem('userId');
@@ -52,6 +68,7 @@ export default function DashboardPage() {
     }
   }
   const adminName = adminUser ? `${adminUser.first_name} ${adminUser.last_name}` : "Admin";
+
   return (
     <Layout>
       <div className="flex h-screen bg-gray-50">
@@ -61,16 +78,16 @@ export default function DashboardPage() {
               <h2 className="text-lg font-medium">Hello, {adminName}</h2>
             </div>
             <div className="flex items-center space-x-4 text-[#621616] cursor-pointer">
-              <CalendarPopup value={filterDate} onChange={setFilterDate} />
+              <CalendarPopup value={filterDate} filterType={filterType} onChange={handleCalendarChange} />
             </div>
           </header>
-          <Cards cases={filteredCases} lawyers={filteredLawyers} />
+          <Cards cases={filteredCases} lawyers={verifiedLawyers} />
           <div className="p-6">
             <CaseDistribution cases={filteredCases} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div className="bg-pink-100 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold mb-4">CPD Points Rank</h3>
-                <Rank lawyers={filteredLawyers} cpdPoints={filteredCPDPoints} />
+                <Rank lawyers={verifiedLawyers} />
               </div>
               <div className="bg-pink-100 p-6 rounded-lg flex flex-col">
                 <h3 className="text-xl font-semibold mb-4">Case Trends</h3>
@@ -83,9 +100,4 @@ export default function DashboardPage() {
     </Layout>
   );
 }
-
-
-
-
-
 

@@ -47,7 +47,7 @@ export function useResetPassword() {
       if (res.detail.toLowerCase().includes("successful")) {
         setMessage(res.detail.trim());
         setTimeout(() => {
-          router.push("/signin");
+          router.push("/authentication/sign-in");
         }, 1500);
       } else {
         throw new Error(res.detail.trim() || "Error resetting password.");
